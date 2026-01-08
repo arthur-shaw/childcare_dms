@@ -1,0 +1,135 @@
+no_head:
+  desc:
+    en: "No household member is designated as reference person."
+    fr: "Aucun membre désigné comme personne de référence."
+  comment:
+    en: >
+      ERROR: {desc_no_head}
+      This is impossible.
+      Please identify the corresponding household member.
+    fr: >
+      ERREUR: {desc_no_head}
+      Ceci est impossible.
+      Veuillez identifier le membre correspondant.
+more_than_one_head:
+  desc:
+    en: "More than one person designated as reference person."
+    fr: "Plus d'un membre désigné comme personne de référence."
+  comment:
+    en: >
+      ERROR: {desc_more_than_one_head}
+      This is impossible.
+      By definition, a household has only one reference person.
+      Please identify the member
+      that serves as reference person for the household.
+    fr: >
+      ERREUR: {desc_more_than_one_head}
+      Ceci est impossible,
+      Par défintion, un ménage n'a qu'une seule personne de référence.
+      Veuillez identifier le membre
+      qui sert de personne de référence pour le ménage.
+owns_no_assets:
+  desc:
+    en: "The household does not own any durable asset."
+    fr: "Le ménage ne possède aucun bien durable."
+  comment:
+    en: >
+      ERROR: {desc_owns_no_assets}
+      While possible, this situation is unlikely.
+      Please confirm and modify responses as needed.
+    fr: >
+      ERREUR: {desc_owns_no_assets}.
+      Bien que possible, cette situation est probablement rare.
+      Veuillez confirmer les réponses et les modifier au besoin.
+no_children:
+  desc:
+    en: "No children under 14 in the household"
+    fr: "Aucun enfant sous l'âge de 14 ans dans le ménage."
+  comment:
+    en: >
+      ERROR: {desc_no_children}
+      The households eligible for the survey are those
+      with a child under 14 years old as a member. 
+      However, no member of that age appears to be part of this household. 
+      Please confirm that the household does not in fact have any children
+      under the age of 14.
+      If there are no children of that age, mark the household as ineligible. 
+      If there are indeed children of that age, please correct their age(s).
+    fr: >
+      ERREUR: {desc_no_children}
+      Les ménages éligibles pour l'enquête sont ceux
+      avec enfant de moins de 14 ans comme un membre.
+      Or, aucun membre de cet âge ne semble en faire partie.
+      Veuillez confirmer que le ménage effectivement n'a aucun enfant
+      sous l'âge de 14 ans.
+      Si aucun enfant de cet âge, marquez le ménage comme inéligible.
+      S'il y a en fait des enfants de cet âge, veuillez corriger leur(s) âge(s)
+own_elect_assets_no_elec:
+  desc:
+    en: >
+      The household owns assets that use electricity
+      but doesn't have access to electricity.
+    fr: >
+      Le ménage possède des biens électriques
+      mais n'a pas l'accès à l'électricité.
+  comment:
+    en: >
+      ERROR: {desc_own_elect_assets_no_elec}
+      In Module 10B, the household reports owning assets that
+      require a significant and/or continuous supply of electricity. 
+      However, in Module 10A, the household reports not having
+      access to electricity. 
+      Please check and correct this inconsistency.
+    fr: >
+      ERREUR: {desc_own_elect_assets_no_elec}
+      Dans le module 10B, le ménage déclare posséder des biens qui
+      nécessitent une alimentation en électricité importante et/ou continue.
+      Pourtant, dans le module 10A, le ménage déclare ne pas avoir
+      accès à l'électricité.
+      Veuillez vérifier et corriger cette incohérence.
+uses_solar_not_own_solar:
+  desc:
+    en: >
+      The main source of electricity is solar energy,
+      but the household doesn't own solar panels.
+    fr: >
+      La source principale d'électricité est l'énergie solaire,
+      mais le ménage ne possède pas de panneaux solaires.
+  comment:
+    en: >
+      ERROR: {desc_uses_solar_not_own_solar}
+      In module 10A, the household reports solar
+      as its main source of electricity.
+      Yet in module 10B, the household reports not owning a solar panel
+      Please check these answers and either correct or comment this
+      inconsistency.
+    fr: >
+      ERREUR: {desc_uses_solar_not_own_solar}
+      Dans le module 10A, le ménage déclare l'énergie solaire
+      comme sa principale source d'électricité.
+      Pourtant, dans le module 10b, le ménage déclare ne pas posséder de panneau solaire.
+      Veuillez vérifier ces réponses et corriger ou commenter cette incohérence.
+owns_gen_asset_no_elec:
+  desc:
+    en: >
+      Owns an asset that generates electricity
+      but reports no access to electricity.
+    fr: >
+      Possède un bien qui produit de l'électricité
+      mais déclare ne pas avoir accès à l'électricité.
+  comment:
+    en: >
+      ERROR: {desc_owns_gen_asset_no_elec}
+      In module 10A, the household reports owning an asset that generates
+      electricity (i.e., a generator or solar panels).
+      Yet in module 10B, the household reports no access to electricity.
+      Please check these answers and either correct or comment this
+      inconsistency.
+    fr: >
+      ERREUR : {desc_owns_gen_asset_no_elec}
+      Dans le module 10A, le ménage déclare posséder un équipement produisant
+      de l'électricité (par exemple, un générateur ou des panneaux solaires). 
+      Pourtant, dans le module 10B, le ménage déclare ne pas avoir
+      accès à l'électricité. 
+      Veuillez vérifier ces réponses et corriger ou commenter cette
+      incohérence.

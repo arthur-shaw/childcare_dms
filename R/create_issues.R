@@ -27,20 +27,26 @@ create_non_outlier_issues <- function(
   # no reference person
   # ----------------------------------------------------------------------------
 
-  desc_no_head <- "Aucun membre désigné comme personne de référence."
+  desc_no_head <- get_msg(
+    messages = messages,
+    id = "no_head",
+    type = "desc"
+    lang = msg_lang
+  )
 
   issue_no_head <- susoreview::create_issue(
     df_attribs = df_attribs,
     vars = "n_heads",
     where = n_heads == 0,
     type = 1,
-    desc = glue::glue("{desc_no_head}"),
-    comment = paste(
-      glue::glue("ERREUR: {desc_no_head}"),
-      "Ceci est impossible",
-      "Par défintion, chaque ménage a une personne de référence.",
-      "Veuillez identifier le membre",
-      "qui sert de personne de référence pour le ménage."
+    desc = desc_no_head,
+    comment = glue::glue(
+      get_msg(
+        messages = messages,
+        id = "no_head",
+        type = "comment",
+        lang = msg_lang
+      )
     )
   )
 
@@ -48,20 +54,25 @@ create_non_outlier_issues <- function(
   # more than 1 reference person
   # ----------------------------------------------------------------------------
 
-  desc_more_than_one_head <-
-    "Plus d'un membre désigné comme personne de référence."
+  desc_more_than_one_head <- get_msg(
+    messages = messages,
+    id = "more_than_one_head",
+    type = "desc",
+    lang = msg_lang
+  )
 
   issue_more_than_one_head <- susoreview::create_issue(
     df_attribs = df_attribs,
     vars = "n_heads",
     where = n_heads > 1,
-    desc = glue::glue("{desc_more_than_one_head}"),
-    comment = paste(
-      glue::glue("ERREUR: {desc_more_than_one_head}"),
-      "Ceci est impossible",
-      "Par défintion, chaque ménage n'a qu'une seule personne de référence.",
-      "Veuillez identifier le membre",
-      "qui sert de personne de référence pour le ménage."
+    desc = desc_more_than_one_head,
+    comment = glue::glue(
+      get_msg(
+        messages = messages,
+        id = "more_than_one_head",
+        type = "comment",
+        lang = msg_lang
+      )
     )
   )
 
@@ -69,17 +80,25 @@ create_non_outlier_issues <- function(
   # owns no assets
   # ----------------------------------------------------------------------------
 
-  desc_owns_no_assets <- "Le ménage ne possède aucun bien durable."
+  desc_owns_no_assets <- get_msg(
+    messages = messages,
+    id = "owns_no_assets",
+    type = "desc",
+    lang = msg_lang
+  )
 
   issue_owns_no_assets <- susoreview::create_issue(
     df_attribs = df_attribs,
     vars = "n_assets",
     where = n_assets == 0,
-    desc = glue::glue("{desc_owns_no_assets}"),
-    comment = paste(
-      glue::glue("ERREUR: {desc_owns_no_assets}."),
-      "Bien que possible, cette situation est probablement rare.",
-      "Veuillez confirmer les réponses et les modifier au besoin."
+    desc = desc_owns_no_assets,
+    comment = glue::glue(
+      get_msg(
+        messages = messages,
+        id = "owns_no_assets",
+        type = "comment,"
+        lang = msg_lang
+      )
     )
   )
 
@@ -87,23 +106,25 @@ create_non_outlier_issues <- function(
   # no children
   # ----------------------------------------------------------------------------
 
-  desc_no_children <-
-    "No children under 14 in the household"
+  desc_no_children <- get_msg(
+    messages = messages,
+    id = "no_children",
+    type = "desc",
+    lang = msg_lang
+  )
 
   issue_no_children <- susoreview::create_issue(
     df_attribs = df_attribs,
     vars = c("n_young_children", "n_school_age_children"),
     where = n_young_children == 0 & n_school_age_children == 0,
-    desc = glue::glue("{desc_no_children}"),
-    comment = paste(
-      glue::glue("ERREUR: {desc_no_children}"),
-      "Les ménages éligibles pour l'enquête sont ceux",
-      "avec enfant de moins de 14 ans comme un membre.",
-      "Or, aucun membre de cet âge ne semble en faire partie.",
-      "Veuillez confirmer que le ménage effectivement n'a aucun enfant",
-      "sous l'âge de 14 ans.",
-      "Si aucun enfant de cet âge, marquez le ménage comme inéligible.",
-      "S'il y a des enfants de cet âge, veuillez corriger leur(s) âge(s)"
+    desc = desc_no_children,
+    comment = glue::glue(
+      get_msg(
+        messages = messages,
+        id = "no_children",
+        type = "comment",
+        lang = msg_lang
+      )
     )
   )
 
@@ -116,7 +137,14 @@ create_non_outlier_issues <- function(
   # but has no access to electricity
   # ----------------------------------------------------------------------------
 
-  desc_own_elect_assets_no_elec <- paste(
+  desc_own_elect_assets_no_elec <- get_msg(
+    messages = messages,
+    id = "own_elect_assets_no_elec",
+    type = "desc",
+    lang = msg_lang
+  )
+  
+  paste(
     "Le ménage possède des biens électriques",
     "mais n'a pas l'accès à l'électricité."
   )
@@ -126,14 +154,12 @@ create_non_outlier_issues <- function(
     vars = c("access_to_electricity", "own_assets_need_elec"),
     where = own_assets_need_elec == 1 & access_to_electricity == 0,
     type = 1,
-    desc = glue::glue("{desc_own_elect_assets_no_elec}"),
-    comment = paste(
-      glue::glue("ERREUR: {desc_own_elect_assets_no_elec}"),
-      "Dans le module 10B, le ménage déclare posséder des biens qui",
-      "nécessitent une alimentation en électricité importante et/ou continue.",
-      "Pourtant, dans le module 10A, le ménage déclare ne pas avoir",
-      "accès à l'électricité.",
-      "Veuillez vérifier et corriger cette incohérence."
+    desc = desc_own_elect_assets_no_elec,
+    comment = get_msg(
+      messages = messages,
+      id = "own_elect_assets_no_elec",
+      type = "comment",
+      lang = msg_lang
     )
   )
 
@@ -141,22 +167,26 @@ create_non_outlier_issues <- function(
   # gets electricity from solar panel but does not own a solar panel
   # ----------------------------------------------------------------------------
 
-  desc_uses_solar_not_own_solar <- paste(
-    "La source principale d'électricité est l'énergie solaire",
-    "mais le ménage ne possède pas de panneaux solaires"
+  desc_uses_solar_not_own_solar <- get_msg(
+    messages = messages,
+    id = "uses_solar_not_own_solar",
+    type = "desc",
+    lang = msg_lang
   )
-
+  
   issue_use_solar_not_own_solar <- susoreview::create_issue(
     df_attribs = attribs,
     vars = c("uses_solar_elec", "own_assets_need_elec"),
     where = uses_solar_elec == 1 & own_assets_need_elec == 0,
     type = 1,
-    desc = glue::glue("{desc_uses_solar_not_own_solar}"),
-    comment = paste(
-      glue::glue("ERROR: {desc_uses_solar_not_own_solar}"),
-      "Dans le module 10A, le ménage déclare que l'énergie solaire est sa principale source d'électricité.",
-      "Pourtant, dans le module 10b, le ménage déclare ne pas posséder de panneau solaire.",
-      "Veuillez vérifier ces réponses et corriger ou commenter cette incohérence."
+    desc = desc_uses_solar_not_own_solar,
+    comment = glue::glue(
+      get_msg(
+        messages = messages,
+        id = "uses_solar_not_own_solar",
+        type = "comment",
+        lang = msg_lang
+      )
     )
   )
 
@@ -164,9 +194,11 @@ create_non_outlier_issues <- function(
   # owns asset that generates electricity but reports not having electricity
   # ------------------------------------------------------------------------------
 
-  desc_owns_gen_asset_no_elec <- paste0(
-    "Owns an asset that generates electricity",
-    "but reports no access to electricity."
+  desc_owns_gen_asset_no_elec <- get_msg(
+    messages = messages,
+    id = "owns_gen_asset_no_elec",
+    type = "desc",
+    lang = msg_lang
   )
 
   issue_owns_gen_asset_no_elec <- susoreview::create_issue(
@@ -174,15 +206,14 @@ create_non_outlier_issues <- function(
     vars = c("own_elec_gen_asset", "access_to_electricity"),
     where = own_elec_gen_asset == 1 & access_to_electricity == 0,
     type = 1,
-    desc = glue::glue("{desc_owns_gen_asset_no_elec}"),
-    comment = paste(
-      glue::glue("ERREUR : {desc_owns_gen_asset_no_elec}"),
-      "Dans le module 10A, le ménage déclare posséder un équipement produisant",
-      "de l'électricité (par exemple, un générateur ou des panneaux solaires).",
-      "Pourtant, dans le module 10B, le ménage déclare ne pas avoir",
-      "accès à l'électricité.",
-      "Veuillez vérifier ces réponses et corriger ou commenter cette",
-      "incohérence."
+    desc = desc_owns_gen_asset_no_elec,
+    comment = glue::glue(
+      get_msg(
+        messages = messages,
+        id = "owns_gen_asset_no_elec",
+        type = "desc",
+        lang = msg_lang
+      )
     )
   )
 
