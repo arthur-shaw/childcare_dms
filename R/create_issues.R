@@ -30,7 +30,7 @@ create_non_outlier_issues <- function(
   desc_no_head <- get_msg(
     messages = messages,
     id = "no_head",
-    type = "desc"
+    type = "desc",
     lang = msg_lang
   )
 
@@ -96,7 +96,7 @@ create_non_outlier_issues <- function(
       get_msg(
         messages = messages,
         id = "owns_no_assets",
-        type = "comment,"
+        type = "comment",
         lang = msg_lang
       )
     )
@@ -143,11 +143,6 @@ create_non_outlier_issues <- function(
     type = "desc",
     lang = msg_lang
   )
-  
-  paste(
-    "Le ménage possède des biens électriques",
-    "mais n'a pas l'accès à l'électricité."
-  )
 
   issue_own_elec_assets_no_elec <- susoreview::create_issue(
     df_attribs = df_attribs,
@@ -173,7 +168,7 @@ create_non_outlier_issues <- function(
     type = "desc",
     lang = msg_lang
   )
-  
+
   issue_use_solar_not_own_solar <- susoreview::create_issue(
     df_attribs = attribs,
     vars = c("uses_solar_elec", "own_assets_need_elec"),
@@ -190,9 +185,9 @@ create_non_outlier_issues <- function(
     )
   )
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # owns asset that generates electricity but reports not having electricity
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
 
   desc_owns_gen_asset_no_elec <- get_msg(
     messages = messages,
@@ -278,26 +273,58 @@ create_outlier_issues <- function(
   # ============================================================================
 
   # ----------------------------------------------------------------------------
+  # extract comment strings
+  # ----------------------------------------------------------------------------
+
+  desc <- get_outlier_msgs(
+    messages = messages,
+    level = "global",
+    id = "desc",
+    lang = msg_lang
+  )
+  comment_intro <- get_outlier_msgs(
+    messages = messages,
+    level = "global",
+    id = "comment_intro",
+    lang = msg_lang
+  )
+  comment_var <- get_outlier_msgs(
+    messages = messages,
+    level = "global",
+    id = "comment_var",
+    lang = msg_lang
+  )
+  comment_body <- get_outlier_msgs(
+    messages = messages,
+    level = "global",
+    id = "comment_body",
+    lang = msg_lang
+  )
+
+  # ----------------------------------------------------------------------------
   # member-level
   # ----------------------------------------------------------------------------
 
   member_lvl_specs <- tibble::tribble(
-    ~ var, ~ by, ~ desc,
+    ~ var, ~ by,
     "s03q48a", "s03q48b",
-      "revenus ou bénéfices gagnés grâce à tous ses emplois",
     "s04cq13", "NULL",
-      "nombre maximum de minutes à parcourir",
     "s04cq15a", "s04cq15b",
-      "montant à payer un prestataire (par unité de temps)",
     "s05bq08a", "s05bq08b",
-      "montant à gagner en travaillant ou en créant une entreprise (par unité de temps)",
     "s05bq14a", "s05bq14b",
-      "montant à gagner en travaillant dans un autre domaine ou créant une entreprise (par unité de temps)",
     "s08q16", "s08q17",
-      "montant devoir payer de votre poche (par unité de temps)",
     "s08q34", "s08q35",
-      "montant devoir payer de votre poche (par unité de temps)",
-  )
+  ) |>
+	dplyr::rowwise() |>
+  dplyr::mutate(
+    desc = get_outlier_msgs(
+      messages = messages,
+      level = "member",
+      id = var,
+      lang = msg_lang
+    )
+  ) |>
+	dplyr::ungroup()
 
   issues_member_lvl <- purrr::pmap(
     .l = member_lvl_specs,
@@ -309,25 +336,15 @@ create_outlier_issues <- function(
       transform = "log",
       bounds = "upper",
       type = 2,
-      desc = glue::glue("Valeur extrême pour {..3}"),
+      desc = glue::glue(desc),
       comment = paste(
         # evaluate
-        glue::glue("Valeur extrême identifée pour {..3}."),
-        glue::glue("La valeur de {..1}"),
+        glue::glue(comment_intro),
+        glue::glue(comment_var),
         # show the outlier amount
         # using the French thousands and decimal marks
         # evaluating the data in the context of the outlier function
-        "({
-          scales::label_number(
-            big.mark = ' ',
-            decimal.mark = ','
-          )(haven::zap_label(.data[[var_chr]]))
-          }
-        )",
-        "s'écarte de la norme.",
-        "Veuillez vérier la justesse de la valeur.",
-        "Si la valeur est erronnée, veuillez la corriger.",
-        "Si la valeur est confirmée, veuillez laisser un commentaire explicatif."
+        comment_body
       )
     )
   )
@@ -337,18 +354,23 @@ create_outlier_issues <- function(
   # ----------------------------------------------------------------------------
 
   child_caregiver_lvl_specs <- tibble::tribble(
-    ~ var, ~ by, ~ desc,
+    ~ var, ~ by,
     "s04bq26a", "s04bq26b",
-      "montant devoir payer de votre poche (par unité de temps)",
     "s04bq27a", "s04bq27b",
-      "montant estimé payé en nature (par unité de temps)",
     "s04bq35", "s04bq36",
-      "montant devoir payer de votre poche (par unité de temps)",
     "s04bq56", "s04bq55",
-      "temps pour se rendre à une structure de garde d'enfant (par le mode de transport principal)",
     "s04bq68", "s04bq69",
-      "montant devoir payer de votre poche (par unité de temps)",
-  )
+  ) |>
+  dplyr::rowwise() |>
+	dplyr::mutate(
+    desc2 = get_outlier_msgs(
+      messages = messages,
+      level = "child-caregiver",
+      id = var,
+      lang = msg_lang
+    )
+  ) |>
+	dplyr::ungroup()
 
   issues_child_caregiver_lvl <- purrr::pmap(
     .l = child_caregiver_lvl_specs,
@@ -360,25 +382,15 @@ create_outlier_issues <- function(
       transform = "log",
       bounds = "upper",
       type = 2,
-      desc = glue::glue("Valeur extrême pour {..3}"),
+      desc = glue::glue(desc),
       comment = paste(
         # evaluate
-        glue::glue("Valeur extrême identifée pour {..3}."),
-        glue::glue("La valeur de {..1}"),
+        glue::glue(comment_intro),
+        glue::glue(comment_var),
         # show the outlier amount
         # using the French thousands and decimal marks
         # evaluating the data in the context of the outlier function
-        "({
-          scales::label_number(
-            big.mark = ' ',
-            decimal.mark = ','
-          )(haven::zap_label(.data[[var_chr]]))
-          }
-        )",
-        "s'écarte de la norme.",
-        "Veuillez vérier la justesse de la valeur.",
-        "Si la valeur est erronnée, veuillez la corriger.",
-        "Si la valeur est confirmée, veuillez laisser un commentaire explicatif."
+        comment_body
       )
     )
   )
@@ -388,9 +400,19 @@ create_outlier_issues <- function(
   # ----------------------------------------------------------------------------
 
   hhold_lvl_specs <- tibble::tribble(
-    ~ var, ~ by, ~ desc,
-    "s10aq06", "NULL", "number of rooms"
-  )
+    ~ var, ~ by,
+    "s10aq06", "NULL",
+  ) |>
+	dplyr::rowwise() |>
+  dplyr::mutate(
+    desc = get_outlier_msgs(
+      messages = messages,
+      level = "household",
+      id = var,
+      lang = msg_lang
+    )
+  ) |>
+	dplyr::ungroup()
 
   issues_hhold_lvl <- purrr::pmap(
     .l = hhold_lvl_specs,
@@ -402,25 +424,15 @@ create_outlier_issues <- function(
       transform = "log",
       bounds = "upper",
       type = 2,
-      desc = glue::glue("Valeur extrême pour {..3}"),
+      desc = glue::glue(desc),
       comment = paste(
         # evaluate
-        glue::glue("Valeur extrême identifée pour {..3}."),
-        glue::glue("La valeur de {..1}"),
+        glue::glue(comment_intro),
+        glue::glue(comment_var),
         # show the outlier amount
         # using the French thousands and decimal marks
         # evaluating the data in the context of the outlier function
-        "({
-          scales::label_number(
-            big.mark = ' ',
-            decimal.mark = ','
-          )(haven::zap_label(.data[[var_chr]]))
-          }
-        )",
-        "s'écarte de la norme.",
-        "Veuillez vérier la justesse de la valeur.",
-        "Si la valeur est erronnée, veuillez la corriger.",
-        "Si la valeur est confirmée, veuillez laisser un commentaire explicatif."
+        comment_body
       )
     )
   )

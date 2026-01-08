@@ -34,3 +34,36 @@ get_msg <- function(
   }
 
 }
+
+#' Get messages for outlier checks
+#'
+#' @inheritParams get_msg
+#'
+#' @return Character, atomic vector. Message for a component of an outlier check.
+#' @param level Character. Level for checking outliers. See 2nd level in YAML.
+#'
+#' @importFrom cli cli_abort
+get_outlier_msgs <- function(
+  messages,
+  level,
+  id,
+  lang
+) {
+
+  message <- messages[["outliers"]][[level]][[id]][[lang]]
+
+  if (!is.null(message)) {
+    return(message)
+  } else {
+
+    if (! level %in% names(messages[["outliers"]])) {
+      cli::cli_abort("{level} is not a valid level")
+    } else if (! id %in% names(messages[["outliers"]][[level]])) {
+      cli::cli_abort("{id} is not a valid issue ID")
+    } else if (! lang %in% names(messages[["outliers"]][[id]])) {
+      cli::cli_abort("{lang} is not a valid language for {id}")
+    }
+
+  }
+
+}

@@ -133,3 +133,83 @@ owns_gen_asset_no_elec:
       accès à l'électricité. 
       Veuillez vérifier ces réponses et corriger ou commenter cette
       incohérence.
+outliers:
+  global:
+    desc:
+      en: "Outlier for {..3}"
+      fr: "Valeur extrême pour {..3}"
+    comment_intro:
+      en: "Outlier identified for {..3}."
+      fr: "Valeur extrême identifée pour {..3}."
+    comment_var:
+      en: "The value of {..1}"
+      fr: "La valeur de {..1}"
+    comment_body:
+      en: >
+        ({
+          scales::label_number(
+            big.mark = ',',
+            decimal.mark = '.'
+          )(haven::zap_label(.data[[var_chr]]))
+          }
+        )
+        diverges from the norm.
+        Please check the accuracy of the value.
+        If the value is incorrect, please correct it.
+        If the value is confirmed, please leave a comment explaining it.
+      fr: >
+        ({
+          scales::label_number(
+            big.mark = ' ',
+            decimal.mark = ','
+          )(haven::zap_label(.data[[var_chr]]))
+          }
+        )
+        s'écarte de la norme.
+        Veuillez vérier la justesse de la valeur.
+        Si la valeur est erronnée, veuillez la corriger.
+        Si la valeur est confirmée, veuillez laisser un commentaire explicatif.
+  member:
+    s03q48a:
+      en:
+      fr: revenus ou bénéfices gagnés grâce à tous ses emplois
+    s04cq13:
+      en:
+      fr: nombre maximum de minutes à parcourir
+    s04cq15a:
+      en:
+      fr: montant à payer un prestataire (par unité de temps)
+    s05bq08a:
+      en:
+      fr: ontant à gagner en travaillant ou en créant une entreprise (par unité de temps)
+    s05bq14a:
+      en:
+      fr: montant à gagner en travaillant dans un autre domaine ou créant une entreprise (par unité de temps)
+    s08q16:
+      en:
+      fr: montant devoir payer de votre poche (par unité de temps)
+    s08q34:
+      en:
+      fr: montant devoir payer de votre poche (par unité de temps)
+
+  child-caregiver:
+    s04bq26a:
+      en: amount must pay out of pocket (by time unit)
+      fr: montant devoir payer de votre poche (par unité de temps)
+    s04bq27a:
+      en: estimated amount paid in-kind (by time unit)
+      fr: montant estimé payé en nature (par unité de temps)
+    s04bq35:
+      en: amount must pay out of pocket (by time unit)
+      fr: montant devoir payer de votre poche (par unité de temps)
+    s04bq56:
+      en: time to reach the childcare setting (by the main means of transport)
+      fr: temps pour se rendre à une structure de garde d'enfant (par le mode de transport principal)
+    s04bq68:
+      en: amount must pay out of pocket (by time unit)
+      fr: montant devoir payer de votre poche (par unité de temps)
+
+  household:
+    s10aq06:
+      en: "number of rooms"
+      fr: "nombre de chambres"
