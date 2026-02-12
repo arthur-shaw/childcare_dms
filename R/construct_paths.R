@@ -20,6 +20,7 @@
 #'  demand: <character>
 #'  community: <character>
 #'  supply: <character>
+#' monitoring: <character>
 #' ```
 #'
 #' @importFrom here here
@@ -36,7 +37,7 @@ construct_paths <- function() {
   dirs$r <- here::here("R")
   dir_data <- here::here("01_data")
   dir_validation <- here::here("02_validation")
-
+  dirs$monitoring <- here::here("03_monitoring")
 
   # ============================================================================
   # data
