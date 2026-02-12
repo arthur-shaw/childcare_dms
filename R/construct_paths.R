@@ -35,7 +35,7 @@ construct_paths <- function() {
   dirs$proj <- here::here()
   dirs$r <- here::here("R")
   dir_data <- here::here("01_data")
-  dir_validation <- here::here("01_validation")
+  dir_validation <- here::here("02_validation")
 
 
   # ============================================================================
