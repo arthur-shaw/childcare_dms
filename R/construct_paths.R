@@ -74,8 +74,8 @@ construct_paths <- function() {
 
         # construct sub-directories under the parent
         child_dirs <- list(
-          download = fs::path(parent_dir, "01_downloaded"),
-          combine = fs::path(parent_dir, "02_combined")
+          downloaded = fs::path(parent_dir, "01_downloaded"),
+          combined = fs::path(parent_dir, "02_combined")
         )
 
         return(child_dirs)
