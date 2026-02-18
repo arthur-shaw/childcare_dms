@@ -15,8 +15,7 @@
 #' @importFrom glue glue
 #' @importFrom dplyr bind_rows
 create_non_outlier_issues <- function(
-  df_attribs,
-  cases_to_review
+  df_attribs
 ) {
 
   # ============================================================================
