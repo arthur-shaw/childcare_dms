@@ -447,3 +447,40 @@ create_outlier_issues <- function(
   return(outlier_issues)
 
 }
+
+#' Create issues
+#'
+#' @description
+#' Create issues for outliers and non-outliers alike
+#'
+#' @param df_attribs Data frame of attributesa.
+#' @param dfs_full List of data frames that contain all survey observations.
+#' @param dfs_filtered List of data frames that are filtered to observations
+#' of interest.
+
+#' @return Data frame of issues, of the form created by
+#' `susoreview::create_issue()`
+#'
+#' @importFrom dplyr bind_rows
+create_issues <- function(
+  df_attribs,
+  dfs_full,
+  dfs_filtered
+) {
+
+  issues_non_outlier <- create_non_outlier_issues(
+    df_attribs = df_attribs
+  )
+
+  issues_outlier <- create_outlier_issues(
+    dfs_full = dfs_full,
+    dfs_filtered = dfs_filtered
+  )
+
+  issues <- dplyr::bind_rows(
+    issues_non_outlier, issues_outlier
+  )
+
+  return(issues)
+
+}
