@@ -6,7 +6,7 @@
 #' - Impossible situations
 #' - Internal inconsistencies
 #'
-#' @param df_attribs
+#' @param df_attribs Data frame of attributes.
 #'
 #' @return Data frame of issues, of the form created by
 #' `susoreview::create_issue()`
