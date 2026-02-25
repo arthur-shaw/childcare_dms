@@ -50,6 +50,80 @@ create_inteview_hash <- function(
 
 }
 
+#' Load interview tracker
+#'
+#' @description
+#' If the RDS-based interview tracker is present in the target directory,
+#' read it from disk.
+#' If no tracker is present, load an empty tibble with the expected columns.
+#'
+#' @param dir Character. Path to the target directory
+#'
+#' @return Data frame expected by `get_updated_interviews()`.
+#'
+#' @importFrom fs dir_exists dir_ls path_file
+#' @importFrom cli cli_abort
+#' @importFrom glue glue_collapse
+#' @importFrom tibble tibble
+load_interview_tracker <- function(dir) {
+
+  # check that `dir` exists
+  if (!fs::dir_exists(path = dir)) {
+    cli::cli_abort(
+      message = c(
+        "x" = "Directory does not exist."
+      )
+    )
+  }
+
+  # check that tracker exists
+  tracker_path <- fs::dir_ls(path = dir, type = "file", glob = "*.rds")
+  tracker_exists <- tracker_path |>
+    (\(x) {
+
+      n_trackers <- length(x)
+
+      if (n_trackers == 1) {
+        TRUE
+      } else if (n_trackers == 0) {
+        FALSE
+      } else if (n_trackers > 1) {
+
+        files_found_txt <- fs::path_file(x) |>
+          glue::glue_collapse(sep = ", ")
+
+        cli::cli_abort(
+          message = c(
+            "x" = "There are {n_trackers} tracker files in {.path {dir}}",
+            "i" = "File found: {files_found_txt}"
+          )
+        )
+
+      }
+
+    })()
+
+  # return a data frame of tracker info
+  # or an empty data frame if no tracker file exists
+  if (tracker_exists) {
+
+    tracker_df <- readRDS(file = tracker_path)
+
+  } else {
+
+    tracker_df <- tibble::tibble(
+      interview__id = character(),
+      event_string = character(),
+      event_hash = character(),
+      .rows = 0
+    )
+
+  }
+
+  return(tracker_df)
+
+}
+
 #' Identify interviews that have changed
 #'
 #' @description
