@@ -468,6 +468,10 @@ create_issues <- function(
   dfs_filtered
 ) {
 
+  # ============================================================================
+  # Create issues
+  # ============================================================================
+
   issues_non_outlier <- create_non_outlier_issues(
     df_attribs = df_attribs
   )
@@ -477,10 +481,19 @@ create_issues <- function(
     dfs_filtered = dfs_filtered
   )
 
-  issues <- dplyr::bind_rows(
-    issues_non_outlier, issues_outlier
-  )
+  # ============================================================================
+  # Combine all issues
+  # ============================================================================
 
-  return(issues)
+  # expression to match intermediary issues objects
+  # but, importantly, not the combined issues object
+  obj_expr_issues <- "^issue[s]*_"
+
+  # combine all issues
+  issues <- dplyr::bind_rows(mget(ls(pattern = obj_expr_issues)))
+
+  # remove intermediary objects to lighten load on memory
+  rm(list = ls(pattern = obj_expr_issues))
+
 
 }
