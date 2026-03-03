@@ -495,5 +495,47 @@ create_issues <- function(
   # remove intermediary objects to lighten load on memory
   rm(list = ls(pattern = obj_expr_issues))
 
+  # ============================================================================
+  # Add issues if questions unanswered
+  # ============================================================================
+
+  # extract number of questions unanswered
+  # use `interview__diagnostics` file rather than request stats from API
+  interview_stats <- dfs_filtered$interview__diagnostics |>
+    # rename to match column names from GET /api/v1/interviews/{id}/stats
+    dplyr::rename(
+      NotAnswered = n_questions_unanswered,
+      WithComments = questions__comments,
+      Invalid = entities__errors
+    ) |>
+    dplyr::select(
+      interview__id, interview__key,
+      NotAnswered, WithComments, Invalid
+    )
+
+  # add error if interview completed, but questions left unanswered
+  # returns issues data supplemented with unanswered question issues
+  issues_plus_unanswered <- susoreview::add_issue_if_unanswered(
+    df_cases_to_review = entretiens_a_valider,
+    df_interview_stats = interview_stats,
+    df_issues = issues,
+    n_unanswered_ok = 0,
+    issue_desc = get_msg(
+      messages = messages,
+      id = "any_unanswered",
+      type = "desc",
+      lang = msg_lang
+    ),
+    issue_comment = glue::glue(
+      get_msg(
+        messages = messages,
+        id = "any_unanswered",
+        type = "comment",
+        lang = msg_lang
+      )
+    )
+  )
+
+  return(issues_plus_unanswered)
 
 }
