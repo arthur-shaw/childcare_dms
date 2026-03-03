@@ -1,3 +1,16 @@
+any_unanswered:
+  desc:
+    en: Questions left unanswered
+    fr: Questions laissés sans réponse
+  comment:
+    en: >
+      ERROR: The interview was marked as complete,
+      but {NotAnswered} questions wre left unanswered.
+      Please answer these questions.
+    fr: >
+      ERREUR : L'entretien a été marqué comme achevé,
+      mais {NotAnswered} questions ont été laissées sans réponse.
+      Veuillez renseigner ces questions.
 no_head:
   desc:
     en: "No household member is designated as reference person."
