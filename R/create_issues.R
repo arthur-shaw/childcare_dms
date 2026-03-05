@@ -7,6 +7,7 @@
 #' - Internal inconsistencies
 #'
 #' @param df_attribs Data frame of attributes.
+#' @param get_msg Function for retrieving the right message
 #'
 #' @return Data frame of issues, of the form created by
 #' `susoreview::create_issue()`
@@ -15,7 +16,8 @@
 #' @importFrom glue glue
 #' @importFrom dplyr bind_rows
 create_non_outlier_issues <- function(
-  df_attribs
+  df_attribs,
+  get_msg
 ) {
 
   # ============================================================================
@@ -26,12 +28,7 @@ create_non_outlier_issues <- function(
   # no reference person
   # ----------------------------------------------------------------------------
 
-  desc_no_head <- get_msg(
-    messages = messages,
-    id = "no_head",
-    type = "desc",
-    lang = msg_lang
-  )
+  desc_no_head <- get_msg("issues", "no_head", "desc")
 
   issue_no_head <- susoreview::create_issue(
     df_attribs = df_attribs,
@@ -40,12 +37,7 @@ create_non_outlier_issues <- function(
     type = 1,
     desc = desc_no_head,
     comment = glue::glue(
-      get_msg(
-        messages = messages,
-        id = "no_head",
-        type = "comment",
-        lang = msg_lang
-      )
+      get_msg("issues", "no_head", "comment")
     )
   )
 
@@ -53,78 +45,42 @@ create_non_outlier_issues <- function(
   # more than 1 reference person
   # ----------------------------------------------------------------------------
 
-  desc_more_than_one_head <- get_msg(
-    messages = messages,
-    id = "more_than_one_head",
-    type = "desc",
-    lang = msg_lang
-  )
+  desc_more_than_one_head <- get_msg("issues", "more_than_one_head", "desc")
 
   issue_more_than_one_head <- susoreview::create_issue(
     df_attribs = df_attribs,
     vars = "n_heads",
     where = n_heads > 1,
     desc = desc_more_than_one_head,
-    comment = glue::glue(
-      get_msg(
-        messages = messages,
-        id = "more_than_one_head",
-        type = "comment",
-        lang = msg_lang
-      )
-    )
+    comment = glue::glue(get_msg("issues", "more_than_one_head", "comment"))
   )
 
   # ----------------------------------------------------------------------------
   # owns no assets
   # ----------------------------------------------------------------------------
 
-  desc_owns_no_assets <- get_msg(
-    messages = messages,
-    id = "owns_no_assets",
-    type = "desc",
-    lang = msg_lang
-  )
+  desc_owns_no_assets <- get_msg("issues", "owns_no_assets", "desc")
 
   issue_owns_no_assets <- susoreview::create_issue(
     df_attribs = df_attribs,
     vars = "n_assets",
     where = n_assets == 0,
     desc = desc_owns_no_assets,
-    comment = glue::glue(
-      get_msg(
-        messages = messages,
-        id = "owns_no_assets",
-        type = "comment",
-        lang = msg_lang
-      )
-    )
+    comment = glue::glue(get_msg("issues", "owns_no_assets", "comment"))
   )
 
   # ----------------------------------------------------------------------------
   # no children
   # ----------------------------------------------------------------------------
 
-  desc_no_children <- get_msg(
-    messages = messages,
-    id = "no_children",
-    type = "desc",
-    lang = msg_lang
-  )
+  desc_no_children <- get_msg("issues", "no_children", "desc")
 
   issue_no_children <- susoreview::create_issue(
     df_attribs = df_attribs,
     vars = c("n_young_children", "n_school_age_children"),
     where = n_young_children == 0 & n_school_age_children == 0,
     desc = desc_no_children,
-    comment = glue::glue(
-      get_msg(
-        messages = messages,
-        id = "no_children",
-        type = "comment",
-        lang = msg_lang
-      )
-    )
+    comment = glue::glue(get_msg("issues", "no_children", "comment"))
   )
 
   # ============================================================================
@@ -137,10 +93,7 @@ create_non_outlier_issues <- function(
   # ----------------------------------------------------------------------------
 
   desc_own_elect_assets_no_elec <- get_msg(
-    messages = messages,
-    id = "own_elect_assets_no_elec",
-    type = "desc",
-    lang = msg_lang
+    "issues", "own_elect_assets_no_elec", "desc"
   )
 
   issue_own_elec_assets_no_elec <- susoreview::create_issue(
@@ -149,12 +102,7 @@ create_non_outlier_issues <- function(
     where = own_assets_need_elec == 1 & access_to_electricity == 0,
     type = 1,
     desc = desc_own_elect_assets_no_elec,
-    comment = get_msg(
-      messages = messages,
-      id = "own_elect_assets_no_elec",
-      type = "comment",
-      lang = msg_lang
-    )
+    comment = get_msg("issues", "own_elect_assets_no_elec", "comment")
   )
 
   # ----------------------------------------------------------------------------
@@ -162,10 +110,7 @@ create_non_outlier_issues <- function(
   # ----------------------------------------------------------------------------
 
   desc_uses_solar_not_own_solar <- get_msg(
-    messages = messages,
-    id = "uses_solar_not_own_solar",
-    type = "desc",
-    lang = msg_lang
+    "issues", "uses_solar_not_own_solar", "desc"
   )
 
   issue_use_solar_not_own_solar <- susoreview::create_issue(
@@ -175,12 +120,7 @@ create_non_outlier_issues <- function(
     type = 1,
     desc = desc_uses_solar_not_own_solar,
     comment = glue::glue(
-      get_msg(
-        messages = messages,
-        id = "uses_solar_not_own_solar",
-        type = "comment",
-        lang = msg_lang
-      )
+      get_msg("issues", "uses_solar_not_own_solar", "comment")
     )
   )
 
@@ -189,10 +129,7 @@ create_non_outlier_issues <- function(
   # ----------------------------------------------------------------------------
 
   desc_owns_gen_asset_no_elec <- get_msg(
-    messages = messages,
-    id = "owns_gen_asset_no_elec",
-    type = "desc",
-    lang = msg_lang
+    "issues", "owns_gen_asset_no_elec", "desc"
   )
 
   issue_owns_gen_asset_no_elec <- susoreview::create_issue(
@@ -201,14 +138,7 @@ create_non_outlier_issues <- function(
     where = own_elec_gen_asset == 1 & access_to_electricity == 0,
     type = 1,
     desc = desc_owns_gen_asset_no_elec,
-    comment = glue::glue(
-      get_msg(
-        messages = messages,
-        id = "owns_gen_asset_no_elec",
-        type = "desc",
-        lang = msg_lang
-      )
-    )
+    comment = glue::glue(get_msg("issues", "owns_gen_asset_no_elec", "desc"))
   )
 
   # ============================================================================
@@ -251,6 +181,7 @@ create_non_outlier_issues <- function(
 #' @param dfs_full List of data frames that contain all survey observations.
 #' @param dfs_filtered List of data frames that are filtered to observations
 #' of interest.
+#' @param get_msg Function for retrieving the right message
 #'
 #' @return Data frame of issues, of the form created by
 #' `susoreview::create_issue()`
@@ -264,7 +195,8 @@ create_non_outlier_issues <- function(
 #' @importFrom haven zap_label
 create_outlier_issues <- function(
   dfs_full,
-  dfs_filtered
+  dfs_filtered,
+  get_msg
 ) {
 
   # ============================================================================
@@ -275,30 +207,10 @@ create_outlier_issues <- function(
   # extract comment strings
   # ----------------------------------------------------------------------------
 
-  desc <- get_outlier_msgs(
-    messages = messages,
-    level = "global",
-    id = "desc",
-    lang = msg_lang
-  )
-  comment_intro <- get_outlier_msgs(
-    messages = messages,
-    level = "global",
-    id = "comment_intro",
-    lang = msg_lang
-  )
-  comment_var <- get_outlier_msgs(
-    messages = messages,
-    level = "global",
-    id = "comment_var",
-    lang = msg_lang
-  )
-  comment_body <- get_outlier_msgs(
-    messages = messages,
-    level = "global",
-    id = "comment_body",
-    lang = msg_lang
-  )
+  desc <- get_msg("outliers", "global", "desc")
+  comment_intro <- get_msg("outliers", "global", "comment_intro")
+  comment_var <- get_msg("outliers", "global", "comment_var")
+  comment_body <- get_msg("outliers", "global", "comment_body")
 
   # ----------------------------------------------------------------------------
   # member-level
@@ -315,14 +227,7 @@ create_outlier_issues <- function(
     "s08q34", "s08q35",
   ) |>
 	dplyr::rowwise() |>
-  dplyr::mutate(
-    desc = get_outlier_msgs(
-      messages = messages,
-      level = "member",
-      id = var,
-      lang = msg_lang
-    )
-  ) |>
+  dplyr::mutate(desc = get_msg("outliers", "member", var)) |>
 	dplyr::ungroup()
 
   issues_member_lvl <- purrr::pmap(
@@ -361,14 +266,7 @@ create_outlier_issues <- function(
     "s04bq68", "s04bq69",
   ) |>
   dplyr::rowwise() |>
-	dplyr::mutate(
-    desc2 = get_outlier_msgs(
-      messages = messages,
-      level = "child-caregiver",
-      id = var,
-      lang = msg_lang
-    )
-  ) |>
+	dplyr::mutate(desc2 = get_msg("outliers", "child-caregiver", var)) |>
 	dplyr::ungroup()
 
   issues_child_caregiver_lvl <- purrr::pmap(
@@ -403,14 +301,7 @@ create_outlier_issues <- function(
     "s10aq06", "NULL",
   ) |>
 	dplyr::rowwise() |>
-  dplyr::mutate(
-    desc = get_outlier_msgs(
-      messages = messages,
-      level = "household",
-      id = var,
-      lang = msg_lang
-    )
-  ) |>
+  dplyr::mutate(desc = get_msg("outliers", "household", var)) |>
 	dplyr::ungroup()
 
   issues_hhold_lvl <- purrr::pmap(
@@ -457,6 +348,7 @@ create_outlier_issues <- function(
 #' @param dfs_full List of data frames that contain all survey observations.
 #' @param dfs_filtered List of data frames that are filtered to observations
 #' of interest.
+#' @param get_msg Function for retrieving the right message
 
 #' @return Data frame of issues, of the form created by
 #' `susoreview::create_issue()`
@@ -465,7 +357,8 @@ create_outlier_issues <- function(
 create_issues <- function(
   df_attribs,
   dfs_full,
-  dfs_filtered
+  dfs_filtered,
+  get_msg
 ) {
 
   # ============================================================================
@@ -520,20 +413,8 @@ create_issues <- function(
     df_interview_stats = interview_stats,
     df_issues = issues,
     n_unanswered_ok = 0,
-    issue_desc = get_msg(
-      messages = messages,
-      id = "any_unanswered",
-      type = "desc",
-      lang = msg_lang
-    ),
-    issue_comment = glue::glue(
-      get_msg(
-        messages = messages,
-        id = "any_unanswered",
-        type = "comment",
-        lang = msg_lang
-      )
-    )
+    issue_desc = get_msg("issues", "any_unanswered", "desc"),
+    issue_comment = glue::glue(get_msg("issues", "any_unanswered", "comment"))
   )
 
   return(issues_plus_unanswered)

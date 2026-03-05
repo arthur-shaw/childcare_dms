@@ -71,7 +71,7 @@ load_interview_tracker <- function(dir) {
   if (!fs::dir_exists(path = dir)) {
     cli::cli_abort(
       message = c(
-        "x" = "Directory does not exist."
+        "x" = get_msg("identify_updated", "dir_dne")
       )
     )
   }
@@ -94,8 +94,8 @@ load_interview_tracker <- function(dir) {
 
         cli::cli_abort(
           message = c(
-            "x" = "There are {n_trackers} tracker files in {.path {dir}}",
-            "i" = "File found: {files_found_txt}"
+            "x" = get_msg("identify_updated", "no_tracker", "error"),
+            "i" = get_msg("identify_updated", "no_tracker", "info")
           )
         )
 

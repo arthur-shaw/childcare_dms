@@ -14,6 +14,7 @@
 #' @param type Character. Questionnaire type short name. Must be a value
 #' defined in `allowed_types`.
 #' @param allowed_types Character vector. Values of allowed questionnaire types
+#' @param get_msg Function for retrieving the right message
 #'
 #' @return Character. Same value as `type` if check passes.
 #'
@@ -22,13 +23,14 @@
 check_type <- function(
   type,
   allowed_types,
+  get_msg,
   call = rlang::caller_env()
 ) {
 
   if (!rlang::is_string(type)) {
     cli::cli_abort(
       message = c(
-        "x" = "{.arg type} must be a single string."
+        "x" = get_msg("get_data", "type_is_string")
       ),
       call = call
     )
@@ -38,7 +40,7 @@ check_type <- function(
     cli::cli_abort(
       message = c(
         "x" = paste0(
-          "{.arg type} must be one of: ",
+          get_msg("get_data", "type_is_allowed"),
           paste(allowed_types, collapse = ", ")
         )
       ),
@@ -68,6 +70,7 @@ check_type <- function(
 #' @param workspace Character. Name (!= display name) of workspace.
 #' @param user Character. Name of the admin or API users.
 #' @param password Character. Password of the user above.
+#' @param get_msg Function for retrieving the right message
 #'
 #' @importFrom susoflows delete_in_dir download_matching unzip_to_dir
 #' @importFrom cli cli_alert_info
@@ -79,7 +82,8 @@ get_data <- function(
   server,
   workspace,
   user,
-  password
+  password,
+  get_msg
 ) {
 
   # ----------------------------------------------------------------------------
@@ -97,7 +101,7 @@ get_data <- function(
   # Purge stale data files
   # ----------------------------------------------------------------------------
 
-  cli::cli_alert_info("Deleting stale {type} data")
+  cli::cli_alert_info(get_msg("get_data", "deleting"))
 
   # downloaded
   susoflows::delete_in_dir(dir_downloaded)
@@ -108,7 +112,7 @@ get_data <- function(
   # Download data as zip archive(s)
   # ----------------------------------------------------------------------------
 
-  cli::cli_alert_info("Downloading {type} data")
+  cli::cli_alert_info(get_msg("get_data", "downloading"))
 
   susoflows::download_matching(
     matches = qnr_expr,
@@ -124,7 +128,7 @@ get_data <- function(
   # Unzip zip archive(s)
   # ----------------------------------------------------------------------------
 
-  cli::cli_alert_info("Unzipping {type}")
+  cli::cli_alert_info(get_msg("get_data", "unzipping"))
 
   susoflows::unzip_to_dir(dir_downloaded)
 
@@ -132,7 +136,7 @@ get_data <- function(
   # Bind together data files
   # ----------------------------------------------------------------------------
 
-  cli::cli_alert_info("Merging {type} data")
+  cli::cli_alert_info(get_msg("get_data", "merging"))
 
   combine_and_save_all(
     dir_downloaded = dir_downloaded,
