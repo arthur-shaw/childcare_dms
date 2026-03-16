@@ -92,6 +92,30 @@ construct_paths <- function() {
     supply = fs::path(dir_validation, "02_supply")
   )
 
+  # ----------------------------------------------------------------------------
+  # add sub-directory entries for all surveys
+  # ----------------------------------------------------------------------------
+
+  dirs$validation[names(data_parents)] <- data_parents |>
+    purrr::map(
+      .f = \(parent_dir_name) {
+
+        # construct the full path to the parent directory
+        parent_dir <- fs::path(dir_validation, parent_dir_name)
+
+        # construct sub-directories under the parent
+        child_dirs <- list(
+          recommendations = fs::path(parent_dir, "01_recommendations"),
+          decisions = fs::path(parent_dir, "01_decisions"),
+          hq_report = fs::path(parent_dir, "01_hq_report"),
+          team_reports = fs::path(parent_dir, "01_team_reports")
+        )
+
+        return(child_dirs)
+
+      }
+    )
+
   return(dirs)
 
 }
