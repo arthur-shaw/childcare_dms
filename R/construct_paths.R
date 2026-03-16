@@ -10,15 +10,14 @@
 #'  meta: <character>
 #'  demand:
 #'    tracked: <character>
-#'    download: <character>
-#'    combine: <character>
+#'    downloaded: <character>
+#'    combined: <character>
 #'  supply:
 #'    tracked: <character>
-#'    download: <character>
-#'    combine: <character>
+#'    downloaded: <character>
+#'    combined: <character>
 #' validation:
 #'  demand: <character>
-#'  community: <character>
 #'  supply: <character>
 #' monitoring: <character>
 #' ```

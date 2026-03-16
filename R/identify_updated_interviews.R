@@ -137,6 +137,7 @@ load_interview_tracker <- function(dir) {
 #' in the form returned by `create_inteview_hash()`
 #'
 #' @return Data frame of interviews whose data has likely changed.
+#' The data frame consists of a single column: `interview__id`.
 #'
 #' @importFrom dplyr anti_join select rename inner_join filter bind_rows
 get_updated_interviews <- function(
