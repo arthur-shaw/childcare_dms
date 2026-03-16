@@ -96,6 +96,3 @@ make_msg_extracter <- function(messages, lang) {
 
   }
 }
-
-# assign 
-get_msg <- make_msg_resolver(messages = messages, lang = msg_lang)
