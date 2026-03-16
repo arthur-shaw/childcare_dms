@@ -66,3 +66,30 @@ filter_dfs <- function(
   return(dfs_filtered)
 
 }
+
+#' Prepare interview stats for API request
+#'
+#' @param diagnostics_df Data frame containing the `interview__diagnostics` file
+#'
+#' @return Data frame with column names renamed to match the API.
+#'
+#' @importFrom dplyr rename select
+prepare_interview_stats <- function(diagnostics_df) {
+
+  # extract number of questions unanswered
+  # use `interview__diagnostics` file rather than request stats from API
+  interview_stats <- path |>
+    # rename to match column names from GET /api/v1/interviews/{id}/stats
+    dplyr::rename(
+      NotAnswered = n_questions_unanswered,
+      WithComments = questions__comments,
+      Invalid = entities__errors
+    ) |>
+    dplyr::select(
+      interview__id, interview__key,
+      NotAnswered, WithComments, Invalid
+    )
+
+  return(interview_stats)
+
+}
