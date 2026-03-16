@@ -5,6 +5,7 @@
 #' ```yaml
 #' proj: <character> # project root
 #' r: <character> # R function directory
+#' i18n: <character> # translations
 #' data: <character>
 #'  meta: <character>
 #'  demand:
@@ -34,6 +35,7 @@ construct_paths <- function() {
   dirs <- list()
   dirs$proj <- here::here()
   dirs$r <- here::here("R")
+  dirs$i18n <- here::here("i18n")
   dir_data <- here::here("01_data")
   dir_validation <- here::here("02_validation")
   dirs$monitoring <- here::here("03_monitoring")
