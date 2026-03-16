@@ -11,10 +11,6 @@
 #'    tracked: <character>
 #'    download: <character>
 #'    combine: <character>
-#'  community:
-#'    tracked: <character>
-#'    download: <character>
-#'    combine: <character>
 #'  supply:
 #'    tracked: <character>
 #'    download: <character>
@@ -62,8 +58,7 @@ construct_paths <- function() {
   # with the values being the directory name
   data_parents <- c(
     demand    = "01_demand",
-    community = "02_community",
-    supply    = "03_supply"
+    supply    = "02_supply"
   )
 
   # apply a function to each a list of sub-directory paths
@@ -93,8 +88,7 @@ construct_paths <- function() {
 
   dirs$validation <- list(
     demand = fs::path(dir_validation, "01_demand"),
-    community = fs::path(dir_validation, "02_community"),
-    supply = fs::path(dir_validation, "03_supply")
+    supply = fs::path(dir_validation, "02_supply")
   )
 
   return(dirs)
