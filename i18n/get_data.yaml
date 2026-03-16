@@ -15,5 +15,7 @@ unzipping:
   fr: "Décompression des données {type} en cours"
 merging:
   en: "Merging {type} data"
-  en: "Fusion des données {type} en cours"
-
+  fr: "Fusion des données {type} en cours"
+getting_metadata:
+  en: "Downloading team composition"
+  fr: "Téléchargement de la composition des équipes en cours"
