@@ -145,6 +145,53 @@ get_data <- function(
 
 }
 
+#' Get team composition
+#'
+#' First, fetch composition. Then, write to labelled Stata file.
+#'
+#' @param dir Character. Directory where data should be stored.
+#' @inheritParams susoflows::download_matching
+#'
+#' @importFrom susoapi get_interviewers
+#' @importFrom labelled var_label
+#' @importFrom haven write_dta
+#' @importFrom fs path
+#'
+#' @noRd
+get_team_composition <- function(
+  dir,
+  server,
+  workspace,
+  user,
+  password
+) {
+
+  # construct team composition
+  team_composition <- susoapi::get_interviewers(
+    server = server,
+    workspace = workspace,
+    user = user,
+    password = password
+  )
+
+  # label columns for easier comprehension
+  labelled::var_label(team_composition) <- list(
+    UserId = "Interviewer GUID",
+    UserName = "Interviewer user name",
+    SupervisorId = "Supervisor user GUID",
+    SupervisorName = "Supervisor user name",
+    Role = "Role: Interviewer, Supervisor"
+  )
+
+  # write to disk
+  haven::write_dta(
+    data = team_composition,
+    path = fs::path(dir, "team_composition.dta")
+  )
+
+}
+
+
 # ==============================================================================
 # Combine
 # ==============================================================================
