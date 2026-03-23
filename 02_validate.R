@@ -15,7 +15,7 @@ dfs_full <- ingest_dfs(
 
 # create hashes for new data
 hashes_new <- create_interview_hash(
-  action_path = fs::path(combined_data_dir, interview__actions.dta),
+  actions_path = fs::path(combined_data_dir, "interview__actions.dta"),
   actions = 1
 )
 
