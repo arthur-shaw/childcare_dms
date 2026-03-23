@@ -1,4 +1,25 @@
 # ==============================================================================
+# purge stale outputs
+# ==============================================================================
+
+output_paths <-
+  # take list of all directories under this node
+  # descendends of `demand`
+  # descendents of `supply`
+  dirs$validation |>
+  # convert from list to vector
+  unlist() |>
+  # remove names
+	unname() |>
+  # bind together in a single vector
+	c()
+
+purrr::walk(
+  .x = output_paths,
+  .f = ~ susoflows::delete_in_dir(.x)
+)
+
+# ==============================================================================
 # ingest data
 # ==============================================================================
 
