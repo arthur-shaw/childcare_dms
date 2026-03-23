@@ -4,6 +4,8 @@
 #' Ingest all Stata data in a directory into a list
 #'
 #' @param dir Character. Directory containing Stata files.
+#' @param hhold_varname Character. Questionnaire variable name for main,
+#' household-level data.
 #'
 #' @return List of data frames.
 #' Names correspond to file names without extension.
@@ -12,7 +14,10 @@
 #' @importFrom fs dir_ls path_file path_ext_remove
 #' @importFrom purrr set_names map
 #' @importFrom haven read_dta
-ingest_dfs <- function(dir) {
+ingest_dfs <- function(
+  dir,
+  hhold_varname
+) {
 
   dfs_list <-
     # get the path of all dta files in the target directory
@@ -30,6 +35,8 @@ ingest_dfs <- function(dir) {
     })() |>
     # make the file name the name of each path
     purrr::set_names(nm = ~ fs::path_ext_remove(fs::path_file(.x))) |>
+    # rename the list element corresponding to the main, household-level data
+    purrr::set_names(nm = ~ ifelse(.x == hhold_varname, "households", .x)) |>
     # replace the path with the data
     purrr::map(haven::read_dta)
 

@@ -4,7 +4,10 @@
 
 combined_data_dir <- dirs$data$demand$combined
 
-dfs_full <- ingest_dfs(combined_data_dir)
+dfs_full <- ingest_dfs(
+  dir = combined_data_dir,
+  hhold_varname = main_file_name
+)
 
 # ==============================================================================
 # identify updated interviews
