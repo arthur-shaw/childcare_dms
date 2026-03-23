@@ -174,7 +174,7 @@ prepare_interview_stats <- function(diagnostics_df) {
 
   # extract number of questions unanswered
   # use `interview__diagnostics` file rather than request stats from API
-  interview_stats <- path |>
+  interview_stats <- diagnostics_df |>
     # rename to match column names from GET /api/v1/interviews/{id}/stats
     dplyr::rename(
       NotAnswered = n_questions_unanswered,
