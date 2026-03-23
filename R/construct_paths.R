@@ -18,7 +18,15 @@
 #'    combined: <character>
 #' validation:
 #'  demand: <character>
+#'    recommendations: <character>
+#'    decisions: <character>
+#'    hq_reqports: <character>
+#'    team_reports: <character>
 #'  supply: <character>
+#'    recommendations: <character>
+#'    decisions: <character>
+#'    hq_reqports: <character>
+#'    team_reports: <character>
 #' monitoring: <character>
 #' ```
 #'
@@ -106,9 +114,9 @@ construct_paths <- function() {
         # construct sub-directories under the parent
         child_dirs <- list(
           recommendations = fs::path(parent_dir, "01_recommendations"),
-          decisions = fs::path(parent_dir, "01_decisions"),
-          hq_report = fs::path(parent_dir, "01_hq_report"),
-          team_reports = fs::path(parent_dir, "01_team_reports")
+          decisions = fs::path(parent_dir, "02_decisions"),
+          hq_report = fs::path(parent_dir, "03_hq_report"),
+          team_reports = fs::path(parent_dir, "04_team_reports")
         )
 
         return(child_dirs)

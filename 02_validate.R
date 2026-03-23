@@ -86,21 +86,21 @@ decisions <- create_decisions(
 # intermediate data
 write_df_to_disk(
   df = updated_interviews,
-  dir = dirs$validation$demand$recommandations
+  dir = dirs$validation$demand$recommendations
 )
 write_df_to_disk(
   df = attribs,
-  dir = dirs$validation$demand$recommandations
+  dir = dirs$validation$demand$recommendations
 )
 write_df_to_disk(
   df = issues_w_unanswered,
-  dir = dirs$validation$demand$recommandations
+  dir = dirs$validation$demand$recommendations
 )
 
 # recommendation files
 write_df_list_to_disk(
   df_list = decisions,
-  dir = dirs$validation$demand$recommandations
+  dir = dirs$validation$demand$recommendations
 )
 
 # ===========================================================================
@@ -109,7 +109,7 @@ write_df_list_to_disk(
 
 fs::file_copy(
   path = fs::path(
-    dirs$validation$demand$recommandations,
+    dirs$validation$demand$recommendations,
     "to_reject_api.xlsx"
   ),
   new_path = fs::path(
