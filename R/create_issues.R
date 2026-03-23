@@ -407,6 +407,19 @@ create_issues <- function(
 
 }
 
+#' Add issues for unanswered questions
+#'
+#' @description
+#' To the data frame of issues, add an issue for each interview
+#' where answers have been left unaswered.
+#'
+#' To do so, extract information from `interview__diagnostics`.
+#' Then, construct an issues uses that information.
+#'
+#' @return Data frame of issues, of the form created by
+#' `susoreview::create_issue()`
+#'
+#' @importFrom susoreview add_issue_if_unanswered
 add_issue_for_unanswered_q <- function(
   dfs_filtered,
   interviews,
@@ -428,5 +441,7 @@ add_issue_for_unanswered_q <- function(
     issue_desc = get_msg("issues", "any_unanswered", "desc"),
     issue_comment = glue::glue(get_msg("issues", "any_unanswered", "comment"))
   )
+
+  return(issues_plus_unanswered)
 
 }
