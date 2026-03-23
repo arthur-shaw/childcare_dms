@@ -52,7 +52,9 @@ create_non_outlier_issues <- function(
     vars = "n_heads",
     where = n_heads > 1,
     desc = desc_more_than_one_head,
-    comment = glue::glue(get_msg("issues", "more_than_one_head", "comment"))
+    comment = glue::glue(
+      get_msg("issues", "more_than_one_head", "comment")
+    )
   )
 
   # ----------------------------------------------------------------------------
@@ -66,7 +68,9 @@ create_non_outlier_issues <- function(
     vars = "n_assets",
     where = n_assets == 0,
     desc = desc_owns_no_assets,
-    comment = glue::glue(get_msg("issues", "owns_no_assets", "comment"))
+    comment = glue::glue(
+      get_msg("issues", "owns_no_assets", "comment")
+    )
   )
 
   # ----------------------------------------------------------------------------
@@ -80,7 +84,9 @@ create_non_outlier_issues <- function(
     vars = c("n_young_children", "n_school_age_children"),
     where = n_young_children == 0 & n_school_age_children == 0,
     desc = desc_no_children,
-    comment = glue::glue(get_msg("issues", "no_children", "comment"))
+    comment = glue::glue(
+      get_msg("issues", "no_children", "comment")
+    )
   )
 
   # ============================================================================
@@ -102,7 +108,9 @@ create_non_outlier_issues <- function(
     where = own_assets_need_elec == 1 & access_to_electricity == 0,
     type = 1,
     desc = desc_own_elect_assets_no_elec,
-    comment = get_msg("issues", "own_elect_assets_no_elec", "comment")
+    comment = glue::glue(
+      get_msg("issues", "own_elect_assets_no_elec", "comment")
+    )
   )
 
   # ----------------------------------------------------------------------------
@@ -138,7 +146,9 @@ create_non_outlier_issues <- function(
     where = own_elec_gen_asset == 1 & access_to_electricity == 0,
     type = 1,
     desc = desc_owns_gen_asset_no_elec,
-    comment = glue::glue(get_msg("issues", "owns_gen_asset_no_elec", "desc"))
+    comment = glue::glue(
+      get_msg("issues", "owns_gen_asset_no_elec", "desc")
+    )
   )
 
   # ============================================================================
