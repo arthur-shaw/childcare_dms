@@ -379,12 +379,14 @@ create_issues <- function(
   # ============================================================================
 
   issues_non_outlier <- create_non_outlier_issues(
-    df_attribs = df_attribs
+    df_attribs = df_attribs,
+    get_msg = get_msg
   )
 
   issues_outlier <- create_outlier_issues(
     dfs_full = dfs_full,
-    dfs_filtered = dfs_filtered
+    dfs_filtered = dfs_filtered,
+    get_msg = get_msg
   )
 
   # ============================================================================
