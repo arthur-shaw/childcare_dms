@@ -74,6 +74,95 @@ filter_dfs <- function(
 
 }
 
+#' Identify interviews that are completed; add metadata for the API
+#'
+#' @description
+#' This function performs two operations:
+#'
+#' 1. Filters interviews to those complete
+#' 2. Adds metadata
+#'
+#' ## Filters interviews to those complete
+#'
+#' Interview completion is determined, jointly, by two sources of information:
+#'
+#' 1. **Interview status.** Survey Solutions' interview status(es)
+#' (e.g., `Completed`, `ApprovedBySupervisor`, etc.)
+#' 2. **Interview content.** Condition under which an interview is judged
+#' completed (e.g., interview result, administration process, etc.).
+#'
+#' ## Adds metadata
+#'
+#' There are two pieces of metadata added:
+#'
+#' 1. **interview_complete.** This marker, which has value of `1` for all
+#' interviews in the returned data set, is for downstream processing by other
+#' `susoreview` functions.
+#' 2. **interview__status.** This is the Survey Solutions status variable
+#' that is found in the microdata and needed so that observations
+#' can be routed to the correct API endpoint (i.e., rejection by Supervisor,
+#' rejection by Headquarters).
+#'
+#' @param main_df
+#' @param statuses
+#' @param is_complete_expr
+#'
+#' @return Data frame with the following columns:
+#'
+#' - interview__id
+#' - interview__key,
+#' - interview_complete
+#' - interview__status
+#'
+#' @importFrom dplyr filter mutate select
+#' @importFrom cli cli_abort
+#' @importFrom rlang enquo
+identify_completed <- function(
+  main_df,
+  statuses,
+  is_complete_expr
+) {
+
+  # capture the expression as a quosure
+  # to delay evaluation
+  # to permit inspection
+  completed_quo <- rlang::enquo(is_complete_expr)
+
+  # check that all variables in the expression are present in the data
+  expr_vars <- completed_quo |>
+    # retrieve the expression component of the quosure
+    rlang::quo_get_expr() |>
+    # return the variable names in the expression as a character vector
+    base::all.vars()
+
+  missing_vars <- setdiff(expr_vars, names(main_df))
+  if (length(missing_vars) > 0) {
+    cli::cli_abort(
+      message = c(
+        "!" = "Variables in {.arg completed_expr} not found in {.arg main_df}:",
+        "*" = "{.var {missing_vars}}"
+      )
+    )
+  }
+
+  df_w_metadata <- main_df |>
+    # filter by ...
+    # ... Survey Solutions interview status
+    dplyr::filter(.data$interview__status %in% .env$statuses) |>
+    # ... interview content
+    dplyr::filter(!!completed_quo) |>
+    # add interview compeltion attributed
+    dplyr::mutate(interview_complete = 1L) |>
+    # retain attributes needed for downstream operations
+    dplyr::select(
+      interview__id, interview__key,
+      interview_complete, interview__status
+    )
+
+  return(df_w_metadata)
+
+}
+
 #' Prepare interview stats for API request
 #'
 #' @param diagnostics_df Data frame containing the `interview__diagnostics` file

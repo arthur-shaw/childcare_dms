@@ -50,6 +50,39 @@ dfs_filtered <- filter_dfs(
 )
 
 # ==============================================================================
+# identify interviews of interest
+# - by SuSo status
+# - by interview completion
+# ==============================================================================
+
+completed_interviews <- identify_completed(
+  main_df = dfs_filtered[["households"]],
+  statuses = suso_statuses_to_reject,
+  is_complete_expr = s12q01 == 1
+)
+
+# stop program if there are no completed interviews
+if (nrow(completed_interviews) == 0) {
+
+  cli::cli_abort(
+    message = c(
+      "i" = "No completed to process",
+      "Consider downloading current data."
+    )
+  )
+
+}
+
+# ==============================================================================
+# filter to interviews of interest
+# ==============================================================================
+
+dfs_filtered <- filter_dfs(
+  dfs_list = dfs_filtered,
+  interviews = completed_interviews
+)
+
+# ==============================================================================
 # perform high-frequency checks
 # ==============================================================================
 
@@ -64,7 +97,7 @@ issues <- create_issues(
 
 issues_w_unanswered <- add_issue_for_unanswered_q(
   dfs_filtered = dfs_filtered,
-  interviews = updated_interviews,
+  interviews = completed_interviews,
   issues = issues
 )
 
@@ -74,7 +107,7 @@ issues_w_unanswered <- add_issue_for_unanswered_q(
 
 decisions <- create_decisions(
   dfs_filtered = dfs_filtered,
-  interviews = updated_interviews,
+  interviews = completed_interviews,
   issues = issues_w_unanswered,
   issue_codes_to_reject = issue_codes_to_reject
 )
