@@ -28,12 +28,12 @@ create_decisions <- function(
   interviews_with_comments <- susoreview::check_for_comments(
     df_comments = dfs_filtered$interview__comments,
     df_issues = issues,
-    df_interviews = interviews
+    df_cases_to_review = interviews
   )
 
   # decide what action to take
   decisions <- susoreview::decide_action(
-    df_interviews = interviews,
+    df_cases_to_review = interviews,
     df_issues = issues,
     issue_types_to_reject = issue_codes_to_reject,
     df_has_comments = interviews_with_comments,
@@ -51,7 +51,7 @@ create_decisions <- function(
 
   # flag persistent issues
   revised_decisions <- susoreview::flag_persistent_issues(
-    df_comments = comments,
+    df_comments = dfs_filtered$interview__comments,
     df_to_reject = to_reject
   )
 
@@ -72,7 +72,7 @@ create_decisions <- function(
       issues,
       by = c("interview__id", "interview__key")
     ) |>
-    dplyr::filter(issue_type %in% c(issue_types_to_reject, 2)) |>
+    dplyr::filter(issue_type %in% c(issue_codes_to_reject, 2)) |>
     dplyr::select(
       interview__id, interview__key, interview__status,
       dplyr::starts_with("issue_")
@@ -91,7 +91,7 @@ create_decisions <- function(
       issues,
       by = c("interview__id", "interview__key")
     ) |>
-    dplyr::filter(issue_type %in% c(issue_types_to_reject, 4)) |>
+    dplyr::filter(issue_type %in% c(issue_codes_to_reject, 4)) |>
     dplyr::select(
       interview__id, interview__key, interview__status,
       dplyr::starts_with("issue_")
