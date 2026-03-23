@@ -19,7 +19,7 @@
 #' @importFrom haven read_dta
 #' @importFrom dplyr filter rowwise mutate ungroup group_by summarise
 #' @importFrom secretbase siphash13
-create_inteview_hash <- function(
+create_interview_hash <- function(
   actions_path,
   actions = 1
 ) {
