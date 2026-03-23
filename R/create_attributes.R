@@ -25,14 +25,16 @@ create_attributes <- function(
 
   attrib_n_young_children <- susoreview::count_obs(
     df = dfs_filtered$members,
-    where = s04a_FILTER1 == 1,
+    # replace `where = s04a_FILTER1 == 1` with the expression below
+    # because `s04a_FILTER1` was accidentaly not exported
+    where = s01q04_years < 7,
     attrib_name = "n_young_children",
-    attrib_vars = "s04a_FILTER1"
+    attrib_vars = "s01q04_years"
   )
 
   attrib_n_school_age_children <- susoreview::count_obs(
     df = dfs_filtered$members,
-    where = s04a_FILTER1 == 1,
+    where = s08_FILTER1 == 1,
     attrib_name = "n_school_age_children",
     attrib_vars = "s08_FILTER1"
   )
@@ -49,7 +51,7 @@ create_attributes <- function(
     df = dfs_filtered$households,
     condition = s10aq08 == 1,
     attrib_name = "access_to_electricity",
-    attrib_vars = "s10aq09"
+    attrib_vars = "s10aq08"
   )
 
   # ----------------------------------------------------------------------------
@@ -82,7 +84,7 @@ create_attributes <- function(
   attrib_n_assets <- dfs_filtered$households |>
     susoreview::count_vars(
       var_pattern = "s10bq01__",
-      var_val == 1,
+      var_val = 1,
       attrib_name = "n_assets"
     )
 
@@ -120,7 +122,7 @@ create_attributes <- function(
     susoreview::any_vars(
       var_pattern = glue::glue("s10bq01__{code_solar_panel}"),
       var_val = 1,
-      attrib_name = "own_assets_need_elec",
+      attrib_name = "own_solar_panel",
     )
 
   # ----------------------------------------------------------------------------
@@ -157,13 +159,13 @@ create_attributes <- function(
 
   # compose the regular expression to target two types of objects
   objects_rexpr <- c(
-  "^attribs_", # objects previously lists of dfs
-  "^attrib_" # objects simple that are simple df
+    "^attribs_", # objects previously lists of dfs
+    "^attrib_" # objects simple that are simple df
   ) |>
     paste(collapse = "|")
 
   # put together in a single data frame all attributes
-  attribs <- dplyr::bind_rows(mget(ls(pattern = objets_rexpr)))
+  attribs <- dplyr::bind_rows(mget(ls(pattern = objects_rexpr)))
 
   return(attribs)
 
