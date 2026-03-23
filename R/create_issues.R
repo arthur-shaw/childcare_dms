@@ -259,7 +259,8 @@ create_outlier_issues <- function(
         # using the French thousands and decimal marks
         # evaluating the data in the context of the outlier function
         comment_body
-      )
+      ),
+      comment_question = TRUE
     )
   )
 
@@ -298,7 +299,8 @@ create_outlier_issues <- function(
         # using the French thousands and decimal marks
         # evaluating the data in the context of the outlier function
         comment_body
-      )
+      ),
+      comment_question = TRUE
     )
   )
 
@@ -333,7 +335,8 @@ create_outlier_issues <- function(
         # using the French thousands and decimal marks
         # evaluating the data in the context of the outlier function
         comment_body
-      )
+      ),
+      comment_question = TRUE
     )
   )
 
