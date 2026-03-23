@@ -10,8 +10,10 @@ write_df_to_disk <- function(
   dir
 ) {
 
-  df_name <- base::substitute(df, env = rlang::current_env()) |>
-    base::deparse()
+  if (is.null(df_name)) {
+    df_name <- base::substitute(df, env = rlang::current_env()) |>
+      base::deparse()
+  }
 
   haven::write_dta(
     data = df,

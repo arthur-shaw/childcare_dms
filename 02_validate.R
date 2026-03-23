@@ -119,6 +119,7 @@ decisions <- create_decisions(
 # intermediate data
 write_df_to_disk(
   df = updated_interviews,
+  df_name = "interviews_validated",
   dir = dirs$validation$demand$recommendations
 )
 write_df_to_disk(
@@ -127,6 +128,7 @@ write_df_to_disk(
 )
 write_df_to_disk(
   df = issues_w_unanswered,
+  df_name = "issues",
   dir = dirs$validation$demand$recommendations
 )
 
