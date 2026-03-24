@@ -167,11 +167,13 @@ get_team_composition <- function(
 ) {
 
   # construct team composition
-  team_composition <- susoapi::get_interviewers(
-    server = server,
-    workspace = workspace,
-    user = user,
-    password = password
+  team_composition <- base::suppressMessages(
+    susoapi::get_interviewers(
+      server = server,
+      workspace = workspace,
+      user = user,
+      password = password
+    )
   )
 
   # label columns for easier comprehension
