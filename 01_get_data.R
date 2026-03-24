@@ -10,8 +10,8 @@ qnr_types <- c("demand", "supply")
 
 dl_specs <- tibble::tribble(
   ~ qnr_expr, ~ type,
-  qnr_demand, "demand",
-  qnr_supply, "supply",
+  demand_qnr_expr, "demand",
+  supply_qnr_expr, "supply",
 )
 
 purrr::pwalk(
@@ -27,7 +27,6 @@ purrr::pwalk(
     password = password,
     get_msg = get_msg
   )
-
 )
 
 # ------------------------------------------------------------------------------
