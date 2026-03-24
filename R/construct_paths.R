@@ -5,8 +5,15 @@
 #' ```yaml
 #' proj: <character> # project root
 #' r: <character> # R function directory
+#' scripts:
+#'  get_data: <character>
+#'  validate: <character>
+#'  reject: <character>
+#'  monitor: <character>
+#' files:
+#'  rejection: <character>
 #' i18n: <character> # translations
-#' data: <character>
+#' data:
 #'  meta: <character>
 #'  demand:
 #'    tracked: <character>
@@ -46,6 +53,18 @@ construct_paths <- function() {
   dir_data <- here::here("01_data")
   dir_validation <- here::here("02_validation")
   dirs$monitoring <- here::here("03_monitoring")
+
+  # ============================================================================
+  # workflow scripts
+  # ============================================================================
+
+  dirs$scripts <- list(
+    get_data = here::here("01_get_data.R"),
+    validate = here::here("02_validate.R"),
+    reject = here::here("02_reject.R"),
+    monitor = here::here("03_monitor.R")
+  )
+
 
   # ============================================================================
   # data
@@ -123,6 +142,14 @@ construct_paths <- function() {
 
       }
     )
+
+  # ============================================================================
+  # files
+  # ============================================================================
+
+  dirs$files <- list(
+    rejection = fs::path(dirs$validation$demand$decisions, "to_reject_api.xlsx")
+  )
 
   return(dirs)
 
