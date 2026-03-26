@@ -351,12 +351,35 @@ hfc_issues <- fs::path(dirs$validation$demand$recommendations, "issues.dta") |>
 		by = c("interview__id", "interview__key")
 	)
 
+hfc_issues_to_report <- hfc_issues |>
+	dplyr::filter(in_report_period == TRUE)
+
+have_hfc_issues <- dplyr::case_when(
+	nrow(hfc_issues_to_report) > 0 ~ TRUE,
+	.default = FALSE
+)
+
 ```
 
-### By issue
+```{r}
+#| label: show text if no HFC issues
+#| eval: !expr have_hfc_issues == FALSE
+#| output: asis
+cat("No issues were flagged by the high-frequency checks during the period of the report.")
+```
+
+<!-- ### By issue -->
+
+```{r}
+#| label: HFC's By issues title
+#| eval: !expr have_hfc_issues == TRUE
+#| output: asis
+cat("### By issue")
+```
 
 ```{r}
 #| label: prepare HFC issue stats
+#| eval: !expr have_hfc_issues == TRUE
 
 hfc_stats_by_issue_tbl <- compute_tbl_by_issue(df = hfc_issues, issue_var = issue_desc)
 
@@ -365,6 +388,7 @@ hfc_stats_by_issue_tbl <- compute_tbl_by_issue(df = hfc_issues, issue_var = issu
 
 ```{r}
 #| label: compose HFC issues table
+#| eval: !expr have_hfc_issues == TRUE
 
 make_reactable(
 	df = hfc_stats_by_issue_tbl,
@@ -378,17 +402,26 @@ make_reactable(
 
 ```
 
-### By team
+<!-- ### By team -->
+
+```{r}
+#| label: HFC's By team title
+#| eval: !expr have_hfc_issues == TRUE
+#| output: asis
+cat("### By team")
+```
 
 ```{r}
 #| label: compute HFC issue stats by team
+#| eval: !expr have_hfc_issues == TRUE
 
 hfc_stats_by_team_tbl <- compute_tbl_by_team(df = hfc_issues, overall_row_lbl = "Overall (median of teams)")
 
 ```
 
 ```{r}
-# label: compose HFC stats table
+#| label: compose HFC stats table
+#| eval: !expr have_hfc_issues == TRUE
 
 make_reactable(
 	df = hfc_stats_by_team_tbl,
@@ -417,12 +450,37 @@ suso_issues <- fs::path(dirs$data$demand$combined, "interview__errors.dta") |>
 		issue = glue::glue("Var: {variable}; Msg. num: {message__number}; Message: {message}")
 	)
 
+suso_issues_to_report <- suso_issues |>
+	dplyr::filter(in_report_period == TRUE)
+
+have_suso_issues <- dplyr::case_when(
+	nrow(suso_issues_to_report) > 0 ~ TRUE,
+	.default = FALSE
+)
+
 ```
 
-### By issue
+```{r}
+#| label: show text if no SuSo issus
+#| eval: !expr have_suso_issues == FALSE
+#| output: asis
+
+cat("No issues were flagged by the Survey Solutions' validations checks during the period of the report.")
+```
+
+<!-- ### By issue -->
+
+```{r}
+#| label: SuSo issues' By issue title
+#| eval: !expr have_suso_issues == TRUE
+#| output: asis
+
+cat("### By issue")
+```
 
 ```{r}
 #| label: by issue
+#| eval: !expr have_suso_issues == TRUE
 
 suso_stats_by_issue_tbl <- compute_tbl_by_issue(
 	df = suso_issues,
@@ -433,6 +491,7 @@ suso_stats_by_issue_tbl <- compute_tbl_by_issue(
 
 ```{r}
 #| label: compose SuSo issues table
+#| eval: !expr have_suso_issues == TRUE
 
 make_reactable(
 	df = suso_stats_by_issue_tbl,
@@ -446,10 +505,20 @@ make_reactable(
 
 ```
 
-### By team
+<!-- ### By team -->
+
+```{r}
+#| label: SuSo issues' By team title
+#| eval: !expr have_suso_issues == TRUE
+#| output: asis
+
+cat("### By team")
+```
+
 
 ```{r}
 #| label: issues by team
+#| eval: !expr have_suso_issues == TRUE
 
 suso_stats_by_team_tbl <- compute_tbl_by_team(
 	df = suso_issues,
@@ -461,6 +530,7 @@ suso_stats_by_team_tbl <- compute_tbl_by_team(
 
 ```{r}
 #| label: compose issues by team table
+#| eval: !expr have_suso_issues == TRUE
 
 make_reactable(
 	df = suso_stats_by_team_tbl,
