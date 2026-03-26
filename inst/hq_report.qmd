@@ -1,0 +1,475 @@
+---
+title: "Validation issues"
+subtitle: "From `r params$report_start` to `r params$report_end`"
+format: html
+toc: true
+toc-depth: 3
+embed-resources: true
+params:
+  dir_proj: ""
+  demand_qnr_var: ""
+  supply_qnr_var: ""
+  report_start: ""
+  report_end: ""
+execute: 
+  eval: true
+  echo: false
+  error: false
+  warning: false
+---
+
+```{r}
+#| label: set up directories
+
+source(fs::path(params$dir_proj, "R", "construct_paths.R"))
+
+dirs <- construct_paths()
+
+```
+
+```{r}
+#| label: load functions
+
+dirs$r |>
+	fs::dir_ls() |>
+	purrr::walk(.f = ~ source(.x))
+
+```
+
+```{r}
+#| label: define reactable theme
+
+childcare_theme <- reactable::reactableTheme(
+  headerStyle = list(
+    background = "#2da29a",
+    color = "white"
+  ),
+  stripedColor = "hsla(177, 35%, 65%, 0.25)",
+)
+
+```
+
+```{r}
+#| label: define functions for computing statistics
+
+#' Compute issue statistics table by issue
+#'
+#' @param df Data frame
+#' @param issue_var Bare name of issue variable in `df`.
+#'
+#' @return Data frame.
+#'
+#' @importFrom dplyr filter group_by summarise ungroup arrange pull select
+#' left_join mutate n desc
+#' @importFrom tidyr nest
+#' @importFrom purrr map
+#' @importFrom rlang enquo as_label
+compute_tbl_by_issue <- function(
+	df,
+	issue_var
+) {
+
+	stats_by_issue <- df |>
+		# select observations in the reporting period
+		dplyr::filter(in_report_period == TRUE) |>
+		dplyr::group_by({{issue_var}}) |>
+		dplyr::summarise(n_occ = dplyr::n()) |>
+		dplyr::ungroup() |>
+		dplyr::arrange(dplyr::desc(n_occ))
+
+	trend_by_issue <- df |>
+		# compute the occurrence by issue-week
+		dplyr::group_by({{issue_var}}, week_interview) |>
+		dplyr::summarise(n_occ = dplyr::n()) |>
+		dplyr::ungroup() |>
+		# order the data frame by issue and date
+		dplyr::arrange({{issue_var}}, week_interview) |>
+		# create a list of measures ordered by date
+		# first, creating a nested data frame so as to preserve order
+		# then, extracting the measure to make into a list column
+		dplyr::group_by({{issue_var}}) |>
+		tidyr::nest(trend_df = c(week_interview, n_occ)) |>
+		dplyr::mutate(trend = purrr::map(trend_df, ~ dplyr::pull(.x, n_occ))) |>
+		dplyr::ungroup() |>
+		dplyr::select({{issue_var}}, trend)
+
+	issue_var_chr <- rlang::enquo(issue_var) |>
+		rlang::as_label()
+
+	stats_tbl <- stats_by_issue |>
+		dplyr::left_join(trend_by_issue, by = issue_var_chr)
+
+	return(stats_tbl)
+
+}
+
+#' Compute issue statistics table by team
+#'
+#' @param df Data frame.
+#' @param overall_row_lbl Character. Text to describe overall group.
+#'
+#' @importFrom filter group_by summarise n ungroup arrange desc filter
+#' mutate pull select bind_rows left_join
+#' @importFrom tidyr nest
+#' @importFrom purrr map
+compute_tbl_by_team <- function(
+	df,
+	overall_row_lbl
+) {
+
+	stats_by_team <- df |>
+		# select observations in the reporting period
+		dplyr::filter(in_report_period == TRUE) |>
+		# compute occurence by team
+		dplyr::group_by(supervisor) |>
+		dplyr::summarise(n_occ = dplyr::n()) |>
+		dplyr::ungroup() |>
+		dplyr::arrange(dplyr::desc(n_occ))
+
+	stats_overall <- df |>
+		# select observations in the reporting period
+		dplyr::filter(in_report_period == TRUE) |>
+		# compute count by team
+		dplyr::group_by(supervisor) |>
+		dplyr::summarise(n_occ = dplyr::n()) |>
+		dplyr::ungroup() |>
+		# compute median count across teams
+		dplyr::summarise(n_occ = median(n_occ, na.rm = TRUE)) |>
+		dplyr::mutate(supervisor = overall_row_lbl, .before = 1)
+
+	trend_by_team <- hfc_issues |>
+		# compute the occurrence by issue-week
+		dplyr::group_by(supervisor, week_interview) |>
+		dplyr::summarise(n_occ = dplyr::n()) |>
+		dplyr::ungroup() |>
+		# order the data frame by issue and date
+		dplyr::arrange(supervisor, week_interview) |>
+		# create a list of measures ordered by date
+		# first, creating a nested data frame so as to preserve order
+		# then, extracting the measure to make into a list column
+		dplyr::group_by(supervisor) |>
+		tidyr::nest(trend_df = c(week_interview, n_occ)) |>
+		dplyr::mutate(trend = purrr::map(trend_df, ~ dplyr::pull(.x, n_occ))) |>
+		dplyr::ungroup() |>
+		dplyr::select(supervisor, trend)
+
+	trend_overall <- df |>
+		# compute the occurrence by issue-week
+		dplyr::group_by(supervisor, week_interview) |>
+		dplyr::summarise(n_occ = dplyr::n()) |>
+		dplyr::ungroup() |>
+		# compute the median per week
+		dplyr::group_by(week_interview) |>
+		dplyr::summarise(n_occ = median(n_occ, na.rm = TRUE)) |>
+		dplyr::ungroup() |>
+		# order the data frame by issue and date
+		dplyr::arrange(week_interview) |>
+		# create a list of measures ordered by date
+		# first, creating a nested data frame so as to preserve order
+		# then, extracting the measure to make into a list column
+		tidyr::nest(trend_df = c(week_interview, n_occ)) |>
+		dplyr::mutate(trend = purrr::map(trend_df, ~ dplyr::pull(.x, n_occ))) |>
+		dplyr::ungroup() |>
+		dplyr::select(trend) |>
+		dplyr::mutate(supervisor = overall_row_lbl, .before = 1)
+
+	# combine overall and team-level stats
+	stats <- dplyr::bind_rows(stats_overall, stats_by_team)
+
+	# combine overall and team-level trends
+	trends <- dplyr::bind_rows(trend_overall, trend_by_team)
+
+	stats_tbl <- dplyr::left_join(stats, trends, by = "supervisor")
+
+	return(stats_tbl)
+
+}
+
+#' Create reactable to display issues statistics
+#'
+#' @param df Data frame.
+#' @param lbl_col_name Character. Name of the label column.
+#' @param lbl_col_width Numeric. Width of the first column (in pixels).
+#' @param bar_color Character. Hex color
+#' @param line_color Character. Hex color
+#' @param fill_color Character. Hex color
+#' @param theme reactable theme object.
+#'
+#' @return reactable table
+#'
+#' @importFrom reactable colDef reactable
+#' @importFrom reactablefmtr data_bars
+#' @importFrom dataui dui_sparkline dui_sparklineseries dui_tooltip
+#' dui_sparkpointseries
+#' @importFrom htmlwidgets JS
+make_reactable <- function(
+	df,
+	lbl_col_name,
+	lbl_col_width,
+	bar_color,
+	line_color,
+	fill_color,
+	theme = childcare_theme
+) {
+
+	cols <- list()
+
+	# issue column
+	cols[[lbl_col_name]] <- reactable::colDef(
+		name = "Issues",
+		width = lbl_col_width
+	)
+	
+	# number of occurences
+	cols$n_occ <- reactable::colDef(
+		name = "N. obs",
+		width = 125,
+		cell = reactablefmtr::data_bars(
+			data = df,
+			fill_color = bar_color,
+			text_position = "outside-base"
+		)
+	)
+
+	cols$trend <- reactable::colDef(
+		name = "Trend",
+		width = 400,
+		cell = function(value, index) {
+			dataui::dui_sparkline(
+				data = value,
+				max = max(unlist(df$trend)),
+				components = list(
+					dataui::dui_sparklineseries(
+						# styling
+						stroke = line_color,
+						showArea = TRUE,
+						fill = fill_color
+					),
+					dataui::dui_tooltip(
+						dataui::dui_sparkpointseries(
+							#styling
+							stroke = line_color,
+							fill = line_color,
+							#litle extra interactivity for demonstration purposes
+							renderLabel = htmlwidgets::JS("(d) => d.toFixed(2)")
+						)
+					)
+				)
+			)
+		}
+	)
+
+	reactable::reactable(
+		data = df,
+		defaultColDef = reactable::colDef(
+			width = 50
+		),
+		columns = cols,
+		striped = TRUE,
+		sortable = TRUE,
+		searchable = TRUE,
+		fullWidth = FALSE,
+		compact = TRUE,
+		theme = theme
+	)
+
+}
+
+```
+
+```{r}
+#| label: load all data
+
+# load all data
+dfs_full <- ingest_dfs(
+  dir = dirs$data$demand$combined,
+  hhold_varname = params$demand_qnr_var
+)
+
+# identify interviews that are completed
+completed_interviews <- dfs_full[["households"]] |>
+	dplyr::filter(s12q01 == 1) |>
+	dplyr::select(interview__id)
+
+# filter all interviews
+dfs_filtered <- filter_dfs(
+  dfs_list = dfs_full,
+  interviews = completed_interviews
+)
+
+```
+
+```{r}
+#| label: load interview action data
+
+interviews_interviewer_responsible <- dfs_filtered$interview__actions |>
+	dplyr::group_by(interview__id, interview__key) |>
+  # select the last completion event
+  # complete
+	dplyr::filter(action == 3) |>
+	# last
+	dplyr::filter(dplyr::row_number() == dplyr::n()) |>
+  dplyr::ungroup() |>
+	dplyr::mutate(
+    # date completed
+    date_interview = lubridate::as_date(date),
+    # week completed
+    week_interview = lubridate::floor_date(
+      x = date_interview, 
+      unit = "week", 
+      # week starts on Monday
+      week_start = getOption("lubridate.week.start", 1)
+    ),
+    # whether in the report period
+    in_report_period = lubridate::`%within%`(
+      date_interview,
+      lubridate::interval(
+				start = params$report_start, 
+				end = params$report_end
+      )
+    )
+  ) |>
+	dplyr::select(
+    interview__id, interview__key,
+    interviewer = originator,
+    supervisor = responsible__name,
+    date_interview, week_interview, in_report_period
+  )
+
+```
+
+## High-frequency check issues
+
+```{r}
+#| label: load high-frequency checks
+
+hfc_issues <- fs::path(dirs$validation$demand$recommendations, "issues.dta") |>
+	haven::read_dta() |>
+	# add metadata on who did the interview and when
+	dplyr::left_join(
+		interviews_interviewer_responsible,
+		by = c("interview__id", "interview__key")
+	)
+
+```
+
+### By issue
+
+```{r}
+#| label: prepare HFC issue stats
+
+hfc_stats_by_issue_tbl <- compute_tbl_by_issue(df = hfc_issues, issue_var = issue_desc)
+
+
+```
+
+```{r}
+#| label: compose HFC issues table
+
+make_reactable(
+	df = hfc_stats_by_issue_tbl,
+	lbl_col_name = "issue_desc",
+	lbl_col_width = 200,
+	bar_color = "#ff7f00",
+	line_color = "#ff7f00",
+	fill_color = "#d78b2e",
+	theme = childcare_theme
+)
+
+```
+
+### By team
+
+```{r}
+#| label: compute HFC issue stats by team
+
+hfc_stats_by_team_tbl <- compute_tbl_by_team(df = hfc_issues, overall_row_lbl = "Overall (median of teams)")
+
+```
+
+```{r}
+# label: compose HFC stats table
+
+make_reactable(
+	df = hfc_stats_by_team_tbl,
+	lbl_col_name = "supervisor",
+	lbl_col_width = 150,
+	bar_color = "#ff7f00",
+	line_color = "#ff7f00",
+	fill_color = "#d78b2e",
+	theme = childcare_theme
+)
+
+```
+
+## Survey Solutions issues
+
+```{r}
+#| label: load SuSo issues
+
+suso_issues <- fs::path(dirs$data$demand$combined, "interview__errors.dta") |>
+	haven::read_dta() |>
+	dplyr::left_join(
+		interviews_interviewer_responsible,
+		by = c("interview__id", "interview__key")
+	) |>
+	dplyr::mutate(
+		issue = glue::glue("Var: {variable}; Msg. num: {message__number}; Message: {message}")
+	)
+
+```
+
+### By issue
+
+```{r}
+#| label: by issue
+
+suso_stats_by_issue_tbl <- compute_tbl_by_issue(
+	df = suso_issues,
+	issue_var = issue
+)
+
+```
+
+```{r}
+#| label: compose SuSo issues table
+
+make_reactable(
+	df = suso_stats_by_issue_tbl,
+	lbl_col_name = "issue",
+	lbl_col_width = 200,
+	bar_color = "#ff7f00",
+	line_color = "#ff7f00",
+	fill_color = "#d78b2e",
+	theme = childcare_theme
+)
+
+```
+
+### By team
+
+```{r}
+#| label: issues by team
+
+suso_stats_by_team_tbl <- compute_tbl_by_team(
+	df = suso_issues,
+	overall_row_lbl = "Overall (median of teams)"
+)
+
+```
+
+
+```{r}
+#| label: compose issues by team table
+
+make_reactable(
+	df = suso_stats_by_team_tbl,
+	lbl_col_name = "supervisor",
+	lbl_col_width = 150,
+	bar_color = "#ff7f00",
+	line_color = "#ff7f00",
+	fill_color = "#d78b2e",
+	theme = childcare_theme
+)
+
+```
