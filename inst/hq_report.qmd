@@ -137,7 +137,7 @@ compute_tbl_by_team <- function(
 		dplyr::summarise(n_occ = median(n_occ, na.rm = TRUE)) |>
 		dplyr::mutate(supervisor = overall_row_lbl, .before = 1)
 
-	trend_by_team <- hfc_issues |>
+	trend_by_team <- df |>
 		# compute the occurrence by issue-week
 		dplyr::group_by(supervisor, week_interview) |>
 		dplyr::summarise(n_occ = dplyr::n()) |>
