@@ -181,7 +181,7 @@ wf_validate <- function(dirs) {
     source(dirs$scripts$validate)
   } else {
     # data_choice == "existing"
-    mtime    <- get_data_timestamp(dir = )
+    mtime    <- get_data_timestamp(dir = dirs)
     timestamp <- format(mtime, "%Y-%m-%d %H:%M")
     detail   <- get_msg("selector", "detail_existing")
     detail   <- glue::glue(detail, timestamp = timestamp)
