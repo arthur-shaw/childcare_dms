@@ -54,8 +54,8 @@ data_last_fetched_today:
 
 # glue placeholder: {datetime} (formatted as "YYYY-MM-DD HH:MM")
 data_last_fetched_prior:
-  en: "Existing data were last retrieved on {.field {datetime}}."
-  fr: "Les données existantes ont été récupérées le {.field datetime}."
+  en: "Existing data were last retrieved on {datetime}."
+  fr: "Les données existantes ont été récupérées le {datetime}."
 
 # glue placeholder: {workflow}
 data_not_found:
