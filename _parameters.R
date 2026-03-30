@@ -65,5 +65,3 @@ suso_statuses_to_reject <- c(100, 120)
 # - 3 = Survey Soluttions validation error
 # - 4 = Review
 issue_codes_to_reject <- c(1)
-
-msg_lang <- ""
