@@ -35,25 +35,25 @@ global:
       Si la valeur est confirmée, veuillez laisser un commentaire explicatif.
 member:
   s03q48a:
-    en:
+    en: earnings or prof made from all jobs
     fr: revenus ou bénéfices gagnés grâce à tous ses emplois
   s04cq13:
-    en:
+    en: maximum number of minutes to travel
     fr: nombre maximum de minutes à parcourir
   s04cq15a:
-    en:
+    en: amount to pay a childcare setting (per unit of time)
     fr: montant à payer un prestataire (par unité de temps)
   s05bq08a:
-    en:
+    en: amount to earn by working / opening a business
     fr: montant à gagner en travaillant ou en créant une entreprise (par unité de temps)
   s05bq14a:
-    en:
+    en: amount to earn working in a different work / opening a business
     fr: montant à gagner en travaillant dans un autre domaine ou créant une entreprise (par unité de temps)
   s08q16:
-    en:
+    en: amount need to pay out of pocket (per time unit)
     fr: montant devoir payer de votre poche (par unité de temps)
   s08q34:
-    en:
+    en: amount must pay out of pocket (per unit time)
     fr: montant devoir payer de votre poche (par unité de temps)
 
 child-caregiver:
