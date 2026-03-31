@@ -19,7 +19,11 @@ This project aims to manage data quality by automating several workflows:
 
 ## Installation 🔌
 
-### Prequisites 🧰
+- [Install prerequisites 🧰](#install-prerequisites-)
+- [Download the project ⬇️](#download-the-project-️)
+- [Provide parameters ⚙️](#provide-parameters-️)
+
+### Install prerequisites 🧰
 
 - [R](#r)
 - [RTools](#rtools)
@@ -68,20 +72,165 @@ RStudio is required for a few reasons:
 
 </details>
 
+### Download the project ⬇️
+
+- Click on the `Code` button
+- Select `Download zip` and download
+- Unzip the project on your device
+
+### Provide parameters ⚙️
+
+Before running the program, one needs to do some one-time setup by:
+
+- Opening `_parameters.R`
+- Inputting a few details described below
+
+#### Server details
+
+For the program to act on your behalf, it needs you to:
+
+1. Create an API account
+2. Provide server connection details
+
+##### Create an API account
+
+On the target Survey Solutions server, create an API user account (see process [here](https://docs.mysurvey.solutions/headquarters/accounts/teams-and-roles-tab-creating-user-accounts/)) and give it access to the workspace that contains your questionnaire (see process [here](https://docs.mysurvey.solutions/headquarters/accounts/adding-users-to-workspaces/))
+
+##### Provide server connection details
+
+Since the program will be connecting to the server as an API user, one must give it the following informations:
+
+```r
+# =============================================================================
+# 1. Server details
+# =============================================================================
+
+server    <- "" # full URL of the server
+workspace <- "" # use the `name` attribute rather than the `display name`.
+user      <- "" # user name for the API account
+password  <- "" # password for the API user account
+
+```
+
+#### Questionnaires
+
+For each target questionnaire, provide two pieces of information:
+
+1. Some text that identifies it. See details in the comment string below. See more about regular expressions [here](https://regexlearn.com/)
+2. Questionnaire variable. See more [here](https://docs.mysurvey.solutions/questionnaire-designer/components/questionnaire-variable/) about where to find that information.
+
+These pieces of information will permit the program to download the data from the questionnaire and correctly identify which data file is the "main" one.
+
+```r
+# =============================================================================
+# 2. Questionnaires
+# =============================================================================
+
+# For each questionniare, provide:
+#
+# 1. text that identifies the questionnaire(s), which could be:
+#   - a full name/title
+#   - a sub-text
+#   - a regular expression
+#
+# 2. the "questionnaire variable" value as it appears in Designer. To find it:
+#   - log into Designer
+#   - open the questionnaire
+#   - click on `SETTINGS`
+#   - copy the values in the `questionnaire variable` filed
+#
+# For more information, please see:
+# https://docs.mysurvey.solutions/questionnaire-designer/components/questionnaire-variable/
+
+# -----------------------------------------------------------------------------
+# Demand-side
+# -----------------------------------------------------------------------------
+
+# text that identifies the questionnaire(s)
+demand_qnr_expr <- ""
+# value of the questionnaire variable
+demand_qnr_var  <- ""
+
+# -----------------------------------------------------------------------------
+# Supply-side
+# -----------------------------------------------------------------------------
+
+# text that identifies the questionnaire(s)
+supply_qnr_expr <- ""
+# value of the questionnaire variable
+supply_qnr_var  <- ""
+```
+
+#### Validation behavior
+
+For the validation workflow to work, it needs to know:
+
+1. **Which interview statuses to review.** In effect, at what point(s) in the interview approval process should the program intervene: immediately once the interviewer posts an interview, after a supervisor approves an interview, and/or after the head office approves an interview?
+2. **What types of issues trigger rejection.** Only issues that merit rejection (default) or others as well?
+
+Unlike other sections of `_parameters.R`, this section contains default values.
+
+See the comments of the file for more details.
+
+```r
+# =============================================================================
+# 3. Validation behavior
+# =============================================================================
+
+# Provide a comma-delimted vector of interview statuses to review
+# See the values here:
+# https://docs.mysurvey.solutions/headquarters/export/system-generated-export-file-anatomy/#coding_status
+# Status values supported by this project:
+# - Completed: 100
+# - ApprovedBySupervisor: 120
+# - ApprovedByHeadquarters: 130
+suso_statuses_to_reject <- c(100, 120)
+
+# Provide a comma-delimited vector of issue types to reject
+# {susoreview} uses the following codes:
+# - 1 = Reject
+# - 2 = Comment a variable
+# - 3 = Survey Soluttions validation error
+# - 4 = Review
+issue_codes_to_reject <- c(1)
+```
+
+#### Report period
+
+For each report indicator, the report provides two sets of information:
+
+- Statistics for the report period
+- Trends covering the full data collection period (including beyond the period indicated)
+
+If no values are provided, the program will assume that the report should cover the last completed week and determine that period using your device's current date.
+
+If one chooses to indicate start and end dates, provide the dates as character strings that follow the [ISO 8601 date format](https://en.wikipedia.org/wiki/ISO_8601).
+
+```r
+# =============================================================================
+# 4. Report period
+# =============================================================================
+
+report_start  <- ""
+report_end    <- ""
+```
 ## Usage 👩‍💻
 
-### Initial setup ⚙️
-
-### Routine use ♻️
-
-- Open 📂
-- Launch 🚀
-- Choose 👉
-- Consume 👀
+- [Open 📂](#open-)
+- [Launch 🚀](#launch-)
+- [Choose 👉](#choose-)
+- [Consume 👀](#consume-)
 
 #### Open 📂
 
-<!-- How/why to open as a project -->
+For the program to work properly, it should be opened as a project.
+
+To do this, double-click on the project file: `childcare_dms.Rproj`.
+
+This will do two useful things:
+
+1. Open RStudio
+2. Open this program in RStudio as a project and activate its project environment (e.g., install required packages at the project level). (To learn more, read [here](https://rstats.wtf/projects#rstudio-projects) and [here](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects).)
 
 #### Launch 🚀
 
