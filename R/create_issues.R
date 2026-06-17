@@ -222,6 +222,10 @@ create_outlier_issues <- function(
   comment_var <- get_msg("outliers", "global", "comment_var")
   comment_body <- get_msg("outliers", "global", "comment_body")
 
+  # force `renv` to include `scales` as a dependency
+  # since the expressions in glue'd in from `outliers.yaml` isn't detected
+  if (FALSE) scales::label_number()
+
   # ----------------------------------------------------------------------------
   # member-level
   # ----------------------------------------------------------------------------
