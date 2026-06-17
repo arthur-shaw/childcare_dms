@@ -322,11 +322,19 @@ identify_outliers <- function(
     dplyr::filter(!{{var}} %in% exclude) |>
     # transform variable
     dplyr::mutate(
-      transformed_val = dplyr::case_when(
-        transform == "log" ~ log({{var}}),
-        transform == "none" ~ {{var}},
-        .default = {{var}}
-      )
+      # because the embrace operator is not correctly evaluated inside of
+      # the if / else construct
+      # need to create a temporary column where the embrace operator works
+      # and then remove that column
+      .temp_col = {{var}},
+      transformed_val = if (transform == "log") {
+        log(.temp_col)
+      } else if (transform == "none") {
+        .temp_col
+      } else {
+        .temp_col
+      },
+      .temp_col = NULL
     ) |>
     (\(x) {
 
