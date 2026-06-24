@@ -25,9 +25,9 @@ This project aims to manage data quality by automating several workflows:
 
 ### Install prerequisites 🧰
 
-- [R](#r)
-- [RTools](#rtools)
-- [RStudio](#rstudio)
+- [R](#r) version 4.5.3
+- [RTools](#rtools) version 4.5
+- [RStudio](#rstudio) any version from 2024 onward
 
 <details>
 
@@ -40,8 +40,9 @@ Open to see more details 👁️
 - Follow this [link](https://cran.r-project.org/)
 - Click on your operating system
 - Click on `base`
+- Find version 4.5.3
 - Download and install (e.g.,
-  [this](https://cran.r-project.org/bin/windows/base/R-4.4.2-win.exe) for Windows)
+  [this](https://cran.r-project.org/bin/windows/base/old/4.5.3/R-4.5.3-win.exe) for Windows)
 
 #### RTools
 
@@ -50,8 +51,9 @@ Necessary when run on a Windows operaterating system
 - Follow this [link](https://cran.r-project.org/)
 - Click on `Windows`
 - Click on `RTools`
+- Find version 4.5
 - Download
-  (e.g.,[this](https://cran.r-project.org/bin/windows/Rtools/rtools44/files/rtools44-6335-6327.exe) for a 64bit  architecture)
+  (e.g.,[this](https://cran.r-project.org/bin/windows/Rtools/rtools45/files/rtools45-6768-6492.exe) for a 64bit  architecture)
 - Install in the default location suggested by the installer
 (e.g., `C:\rtools4'`)
 
