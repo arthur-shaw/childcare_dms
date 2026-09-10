@@ -249,6 +249,11 @@ identify_outliers <- function(
   # ============================================================================
 
   df_thresholds <- df_full |>
+    # ensure that the variable is numeric
+    # removing `haven_labelled` class that may trip up downstream operations
+    dplyr::mutate(
+      {{var}} := is.numeric(haven::zap_labels({{var}}))
+    ) |>
     (\(x) {
       if (!by_is_null) {
         dplyr::group_by(
@@ -317,6 +322,11 @@ identify_outliers <- function(
   # ============================================================================
 
   df_outliers <- df_to_check |>
+    # ensure that the variable is numeric
+    # removing `haven_labelled` class that may trip up downstream operations
+    dplyr::mutate(
+      {{var}} := is.numeric(haven::zap_labels({{var}}))
+    ) |>
     # drop observations with excluded values
     # so that they are not compared against outlier thresholds and classified
     dplyr::filter(!{{var}} %in% exclude) |>
